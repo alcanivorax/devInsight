@@ -1,11 +1,11 @@
-import { PackageInfo } from "../types";
+import { PackageInfo, RawPackageJson } from "../types";
 import { detectFramework } from "./detectFramework";
 import { detectLanguage } from "./detectLanguage";
 import { detectPackageManager } from "./detectPackageManager";
 import { detectRuntime } from "./detectRuntime";
 
 export async function extractPackageJsonInfo(
-  packageJson: string
+  packageJson: RawPackageJson
 ): Promise<PackageInfo> {
   let parsed: any;
 
@@ -13,11 +13,11 @@ export async function extractPackageJsonInfo(
 JSON.parse() converts a string JSON into JS object
 */
 
-  try {
-    parsed = JSON.parse(packageJson);
-  } catch (error) {
-    throw new Error("Invalid package.json: Unable to parse JSON");
-  }
+  // try {
+  parsed = packageJson;
+  // } catch (error) {
+  //   throw new Error("Invalid package.json: Unable to parse JSON");
+  // }
 
   /*
 Object.keys() returns an array of an object’s own property names (keys).

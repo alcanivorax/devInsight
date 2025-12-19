@@ -25,6 +25,7 @@ export async function extractReadmeInfo(readme: string): Promise<ReadmeInfo> {
   const installation = extractSection(normalized, [
     "installation",
     "install",
+    "installing",
     "setup",
     "getting started",
     "get started",
