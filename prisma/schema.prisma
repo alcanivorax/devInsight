@@ -13,6 +13,7 @@ datasource db {
   provider = "postgresql"
 }
 
+// testing model to check database connection, and future integration;
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
