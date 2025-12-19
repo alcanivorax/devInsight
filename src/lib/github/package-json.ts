@@ -1,10 +1,10 @@
 import { octokit } from "./client";
-import type { PackageJson } from "./types";
+import type { RawPackageJson } from "./types";
 
 export async function getRepoPackageJson(
   owner: string,
   repo: string
-): Promise<PackageJson | null> {
+): Promise<RawPackageJson | null> {
   try {
     const res = await octokit.rest.repos.getContent({
       owner,

@@ -1,0 +1,20 @@
+export const dummyPackageJson = JSON.stringify({
+  name: "devinsight-sample",
+  version: "0.1.0",
+  private: true,
+  description: "A dummy project for testing extractors",
+  scripts: {
+    dev: "next dev",
+    build: "next build",
+    start: "next start",
+  },
+  dependencies: {
+    next: "14.0.0",
+    react: "^18.2.0",
+    "react-dom": "^18.2.0",
+  },
+  devDependencies: {
+    typescript: "^5.3.0",
+    vitest: "^1.2.0",
+  },
+});

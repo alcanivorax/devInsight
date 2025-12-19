@@ -1,3 +1,7 @@
+import { RawMetadata } from "@/schema/metadataSchema";
+import { RawPackageJson } from "@/schema/packageJsonSchema";
+import { RawRepoTree } from "@/schema/treeSchema";
+
 interface TreeInfo {
   language: string | null;
   framework: string | null;
@@ -5,14 +9,6 @@ interface TreeInfo {
   hasCI: boolean;
   hasTests: boolean;
   entryPoint: string | null;
-}
-
-interface DetectionPatterns {
-  configFiles: Map<string, { language?: string; framework?: string }>;
-  testPatterns: RegExp[];
-  ciPatterns: RegExp[];
-  dockerPatterns: RegExp[];
-  entryPoints: Map<string, string[]>;
 }
 
 interface ReadmeInfo {
@@ -40,15 +36,37 @@ interface PackageInfo {
   entryPoint: string | null;
 }
 
+interface MetadataInfo {
+  name: string;
+  description: string | null;
+  language: string | null;
+  topics: string[];
+  license: string | null;
+  defaultBranch: string | null;
+}
+
 interface FrameworkSignature {
   deps: string[];
   framework: string;
   runtime?: string;
 }
+
+interface DetectionPatterns {
+  configFiles: Map<string, { language?: string; framework?: string }>;
+  testPatterns: RegExp[];
+  ciPatterns: RegExp[];
+  dockerPatterns: RegExp[];
+  entryPoints: Map<string, string[]>;
+}
+
 export type {
   TreeInfo,
   DetectionPatterns,
   ReadmeInfo,
   PackageInfo,
   FrameworkSignature,
+  MetadataInfo,
+  RawMetadata,
+  RawPackageJson,
+  RawRepoTree,
 };

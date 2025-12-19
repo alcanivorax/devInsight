@@ -2,8 +2,9 @@ import { TreeInfo } from "../types";
 import { detectFromConfigFiles } from "./detectFromConfigFiles";
 import { createDetectionPatterns } from "./createDetectionPatterns";
 import { detectEntryPoint } from "./detectEntryPoint";
+import { RawRepoTree } from "../types";
 
-export async function extractTreeInfo(tree: string[]): Promise<TreeInfo> {
+export function extractTreeInfo(tree: RawRepoTree): TreeInfo {
   const info: TreeInfo = {
     language: null,
     framework: null,
@@ -14,10 +15,10 @@ export async function extractTreeInfo(tree: string[]): Promise<TreeInfo> {
   };
 
   const patterns = createDetectionPatterns();
-  const normalizedPaths = tree.map((p) => p.toLowerCase());
+  const normalizedPaths = tree.map((item) => item.path.toLowerCase());
 
   for (let i = 0; i < tree.length; i++) {
-    const path = tree[i];
+    const path = tree[i].path;
     const normalized = normalizedPaths[i];
 
     // Detect language and framework from config files

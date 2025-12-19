@@ -4,7 +4,7 @@ import { detectLanguage } from "./detectLanguage";
 import { detectPackageManager } from "./detectPackageManager";
 import { detectRuntime } from "./detectRuntime";
 
-export async function extractPackageInfo(
+export async function extractPackageJsonInfo(
   packageJson: string
 ): Promise<PackageInfo> {
   let parsed: any;

@@ -1,10 +1,10 @@
 import { octokit } from "./client";
-import type { RepoMetadata } from "./types";
+import type { RawMetadata } from "./types";
 
 export async function getRepoMetadata(
   owner: string,
   repo: string
-): Promise<RepoMetadata> {
+): Promise<RawMetadata> {
   const { data } = await octokit.rest.repos.get({ owner, repo });
   return {
     name: data.name,
