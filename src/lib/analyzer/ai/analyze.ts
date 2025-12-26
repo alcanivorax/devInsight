@@ -1,8 +1,7 @@
 import { OpenRouter } from "@openrouter/sdk";
-import { RepoAnalysis } from "./types";
 import { ValidationError } from "@/lib/error";
 
-export async function aiSummary(prompt: string): Promise<RepoAnalysis> {
+export async function runPrompt<T>(prompt: string): Promise<T> {
   if (!process.env.OPENROUTER_API_KEY) {
     throw new Error("Missing OPENROUTER_API_KEY");
   }
@@ -29,32 +28,14 @@ export async function aiSummary(prompt: string): Promise<RepoAnalysis> {
 
   const cleaned = extractJson(text);
 
-  let parsed: unknown;
   try {
-    parsed = JSON.parse(cleaned);
+    return JSON.parse(cleaned) as T;
   } catch {
     throw new ValidationError("AI returned invalid JSON", {
       rawOutput: text,
       cleanedOutput: cleaned,
     });
   }
-
-  // Runtime shape validation
-  if (
-    typeof parsed !== "object" ||
-    parsed === null ||
-    typeof (parsed as any).summary !== "string" ||
-    typeof (parsed as any).architecture !== "string" ||
-    !Array.isArray((parsed as any).setupGuide) ||
-    !(parsed as any).setupGuide.every((s: any) => typeof s === "string")
-  ) {
-    throw new ValidationError(
-      "AI response does not match RepoAnalysis contract",
-      { parsed }
-    );
-  }
-
-  return parsed as RepoAnalysis;
 }
 
 function extractTextContent(content: string | any[]): string | null {

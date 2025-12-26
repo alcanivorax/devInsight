@@ -1,12 +1,10 @@
 import { TechHints } from "../extractors/types";
 import { PackageInfo } from "../extractors/types";
 import { ResolvedTechInfo } from "./types";
+import { EntryPointValue } from "../extractors/types";
 
 function resolveValue(
-  hint?: {
-    value: string | null;
-    confidence: "explicit" | "inferred" | "unknown";
-  },
+  hint?: EntryPointValue,
   pkgValue?: string | null
 ): string | null {
   if (hint?.confidence === "explicit") return hint.value ?? null;
