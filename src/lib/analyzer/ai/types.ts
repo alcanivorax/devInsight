@@ -1,5 +1,19 @@
 export interface RepoAnalysis {
-  summary: string;
-  architecture: string;
-  setupGuide: string[];
+  identity: {
+    summary: string;
+  };
+
+  tech: {
+    stack: string;
+  };
+
+  structure: {
+    overview: string[];
+    entryPoints?: string[];
+  };
+
+  setup: {
+    installation: string | null;
+    runCommand?: string | null;
+  };
 }

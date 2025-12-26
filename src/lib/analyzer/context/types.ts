@@ -1,3 +1,5 @@
+import { EntryPointValue, ConfidenceLevel } from "../extractors/types";
+
 // Influenced by: extractReadmeInfo + extractMetadataInfo
 interface IdentityContext {
   name: string | null;
@@ -14,14 +16,14 @@ interface TechContext {
 
 // Influenced by: extractTreeInfo (+ defaultBranch internally)
 interface StructureContext {
-  overview: string;
-  entryPoint?: string | null;
+  overview: string[];
+  entryPoints?: EntryPointValue[];
 }
 
 // Influenced by: extractReadmeInfo + extractPackageInfo
 interface SetupContext {
   installation: string | null;
-  runCommand?: string | null;
+  runCommand: string | null;
 }
 
 interface RepoContext {

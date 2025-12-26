@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { extractTreeInfo } from "./extractTreeInfo";
+import { extractTreeInfo } from "./extractTreeSignal";
 import { dummyTree } from "./__fixtures__/tree";
 
 test("extractTreeInfo detects basic project structure", () => {

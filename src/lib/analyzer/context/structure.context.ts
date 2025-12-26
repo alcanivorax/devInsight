@@ -1,34 +1,29 @@
 import { StructureContext } from "./types";
-import { TreeInfo } from "../extractors/types";
+import { TreeSignals } from "../extractors/types";
 
-export function createStructureContext(tree: TreeInfo): StructureContext {
-  const sentences: string[] = [];
+export function createStructureContext(tree: TreeSignals): StructureContext {
+  const overview: string[] = [];
 
   if (tree.hasDocker) {
-    sentences.push("The repository includes Docker configuration.");
+    overview.push("Docker configuration is present.");
   }
 
   if (tree.hasCI) {
-    sentences.push("CI pipelines are configured.");
+    overview.push("CI/CD configuration files are present.");
   }
 
   if (tree.hasTests) {
-    sentences.push("Automated tests are present.");
+    overview.push("Test-related files or directories are present.");
   }
 
-  if (tree.entryPoint) {
-    sentences.push(
-      `The application entry point appears to be ${tree.entryPoint}.`
+  if (overview.length === 0) {
+    overview.push(
+      "No strong structural signals could be inferred from the repository tree."
     );
   }
 
-  const overview =
-    sentences.length > 0
-      ? sentences.join(" ")
-      : "Repository structure could not be clearly inferred from the file tree.";
-
   return {
     overview,
-    entryPoint: tree.entryPoint ?? null,
+    entryPoints: tree.entryPoints.length > 0 ? tree.entryPoints : undefined,
   };
 }

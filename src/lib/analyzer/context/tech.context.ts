@@ -1,16 +1,11 @@
 import { TechContext } from "./types";
-import { PackageInfo } from "../extractors/types";
+import { ResolvedTechInfo } from "../merge/types";
 
-export function createTechContext(packageJson: PackageInfo): TechContext {
-  const language = packageJson.language ?? null;
-  const framework = packageJson.framework ?? null;
-  const packageManager = packageJson.packageManager ?? null;
-  const runtime = packageJson.runtime ?? null;
-
+export function createTechContext(resolved: ResolvedTechInfo): TechContext {
   return {
-    language,
-    framework,
-    packageManager,
-    runtime,
+    language: resolved.language,
+    framework: resolved.framework,
+    runtime: resolved.runtime,
+    packageManager: resolved.packageManager,
   };
 }

@@ -1,55 +1,127 @@
-import { DetectionPatterns } from "../types";
+import { DetectionPatterns, TechSignal } from "../types";
 
 export function createDetectionPatterns(): DetectionPatterns {
-  const configFiles = new Map([
-    // JavaScript/TypeScript
-    ["package.json", { language: "JavaScript" }],
-    ["tsconfig.json", { language: "TypeScript" }],
-    ["next.config.js", { language: "TypeScript", framework: "Next.js" }],
-    ["next.config.ts", { language: "TypeScript", framework: "Next.js" }],
-    ["nuxt.config.js", { language: "JavaScript", framework: "Nuxt" }],
-    ["nuxt.config.ts", { language: "TypeScript", framework: "Nuxt" }],
-    ["vite.config.js", { language: "JavaScript", framework: "Vite" }],
-    ["vite.config.ts", { language: "TypeScript", framework: "Vite" }],
-    ["angular.json", { language: "TypeScript", framework: "Angular" }],
-    ["svelte.config.js", { language: "JavaScript", framework: "Svelte" }],
+  const configFiles = new Map<string, TechSignal>([
+    // JavaScript / TypeScript
+    [
+      "package.json",
+      {
+        language: { value: "JavaScript", confidence: "inferred" },
+      },
+    ],
+    [
+      "tsconfig.json",
+      {
+        language: { value: "TypeScript", confidence: "explicit" },
+      },
+    ],
+    [
+      "next.config.js",
+      {
+        framework: { value: "Next.js", confidence: "explicit" },
+      },
+    ],
+    [
+      "next.config.ts",
+      {
+        framework: { value: "Next.js", confidence: "explicit" },
+      },
+    ],
+    [
+      "vite.config.ts",
+      {
+        framework: { value: "Vite", confidence: "explicit" },
+      },
+    ],
+    [
+      "angular.json",
+      {
+        framework: { value: "Angular", confidence: "explicit" },
+      },
+    ],
 
     // Python
-    ["requirements.txt", { language: "Python" }],
-    ["setup.py", { language: "Python" }],
-    ["pyproject.toml", { language: "Python" }],
-    ["pipfile", { language: "Python" }],
-    ["poetry.lock", { language: "Python" }],
-    ["manage.py", { language: "Python", framework: "Django" }],
-
-    // Ruby
-    ["gemfile", { language: "Ruby" }],
-    ["rakefile", { language: "Ruby" }],
-    ["config.ru", { language: "Ruby", framework: "Rack" }],
+    [
+      "pyproject.toml",
+      {
+        language: { value: "Python", confidence: "explicit" },
+      },
+    ],
+    [
+      "requirements.txt",
+      {
+        language: { value: "Python", confidence: "inferred" },
+      },
+    ],
+    [
+      "manage.py",
+      {
+        framework: { value: "Django", confidence: "explicit" },
+      },
+    ],
 
     // Go
-    ["go.mod", { language: "Go" }],
-    ["go.sum", { language: "Go" }],
+    [
+      "go.mod",
+      {
+        language: { value: "Go", confidence: "explicit" },
+      },
+    ],
 
     // Rust
-    ["cargo.toml", { language: "Rust" }],
-    ["cargo.lock", { language: "Rust" }],
+    [
+      "cargo.toml",
+      {
+        language: { value: "Rust", confidence: "explicit" },
+      },
+    ],
 
     // Java
-    ["pom.xml", { language: "Java", framework: "Maven" }],
-    ["build.gradle", { language: "Java", framework: "Gradle" }],
-    ["build.gradle.kts", { language: "Kotlin", framework: "Gradle" }],
+    [
+      "pom.xml",
+      {
+        language: { value: "Java", confidence: "explicit" },
+        framework: { value: "Maven", confidence: "explicit" },
+      },
+    ],
+    [
+      "build.gradle",
+      {
+        framework: { value: "Gradle", confidence: "explicit" },
+      },
+    ],
+
+    // Ruby
+    [
+      "gemfile",
+      {
+        language: { value: "Ruby", confidence: "explicit" },
+      },
+    ],
 
     // PHP
-    ["composer.json", { language: "PHP" }],
+    [
+      "composer.json",
+      {
+        language: { value: "PHP", confidence: "explicit" },
+      },
+    ],
 
     // .NET
-    [".csproj", { language: "C#" }],
-    [".fsproj", { language: "F#" }],
-    [".vbproj", { language: "Visual Basic" }],
+    [
+      ".csproj",
+      {
+        language: { value: "C#", confidence: "explicit" },
+      },
+    ],
 
     // Elixir
-    ["mix.exs", { language: "Elixir" }],
+    [
+      "mix.exs",
+      {
+        language: { value: "Elixir", confidence: "explicit" },
+      },
+    ],
   ]);
 
   const testPatterns = [
@@ -83,38 +155,61 @@ export function createDetectionPatterns(): DetectionPatterns {
     /^\.dockerignore$/,
   ];
 
-  const entryPoints = new Map([
-    [
-      "JavaScript",
-      [
-        "index.js",
-        "main.js",
-        "app.js",
-        "server.js",
-        "src/index.js",
-        "src/main.js",
-      ],
-    ],
-    [
-      "TypeScript",
-      [
-        "index.ts",
-        "main.ts",
-        "app.ts",
-        "server.ts",
-        "src/index.ts",
-        "src/main.ts",
-      ],
-    ],
-    [
-      "Python",
-      ["main.py", "app.py", "__main__.py", "run.py", "manage.py", "wsgi.py"],
-    ],
-    ["Go", ["main.go", "cmd/main.go"]],
-    ["Rust", ["src/main.rs", "main.rs"]],
-    ["Ruby", ["main.rb", "app.rb", "config.ru"]],
-    ["Java", ["Main.java", "Application.java", "App.java"]],
-  ]);
+  const entryPointPatterns: RegExp[] = [
+    // Common
+    /(^|\/)index\.(js|ts)$/i,
+    /(^|\/)main\.(js|ts|py|go|rs)$/i,
+    /(^|\/)app\.(js|ts|py|rb)$/i,
+    /(^|\/)server\.(js|ts)$/i,
 
-  return { configFiles, testPatterns, ciPatterns, dockerPatterns, entryPoints };
+    // Framework / ecosystem hints
+    /(^|\/)src\/index\.(js|ts)$/i,
+    /(^|\/)__main__\.py$/i,
+    /(^|\/)manage\.py$/i,
+    /(^|\/)wsgi\.py$/i,
+    /(^|\/)cmd\/.*\/main\.go$/i,
+    /(^|\/)main\.rs$/i,
+    /(^|\/)config\.ru$/i,
+  ];
+
+  // const entryPoints = new Map([
+  //   [
+  //     "JavaScript",
+  //     [
+  //       "index.js",
+  //       "main.js",
+  //       "app.js",
+  //       "server.js",
+  //       "src/index.js",
+  //       "src/main.js",
+  //     ],
+  //   ],
+  //   [
+  //     "TypeScript",
+  //     [
+  //       "index.ts",
+  //       "main.ts",
+  //       "app.ts",
+  //       "server.ts",
+  //       "src/index.ts",
+  //       "src/main.ts",
+  //     ],
+  //   ],
+  //   [
+  //     "Python",
+  //     ["main.py", "app.py", "__main__.py", "run.py", "manage.py", "wsgi.py"],
+  //   ],
+  //   ["Go", ["main.go", "cmd/main.go"]],
+  //   ["Rust", ["src/main.rs", "main.rs"]],
+  //   ["Ruby", ["main.rb", "app.rb", "config.ru"]],
+  //   ["Java", ["Main.java", "Application.java", "App.java"]],
+  // ]);
+
+  return {
+    configFiles,
+    testPatterns,
+    ciPatterns,
+    dockerPatterns,
+    entryPointPatterns,
+  };
 }

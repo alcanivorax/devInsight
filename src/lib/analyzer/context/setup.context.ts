@@ -6,7 +6,9 @@ export function createSetupContext(
   packageJson: PackageInfo
 ): SetupContext {
   const installation = readme.installation ?? null;
-  const runCommand = packageJson.scripts.dev ?? packageJson.scripts.start;
+
+  const runCommand =
+    packageJson.scripts?.dev ?? packageJson.scripts?.start ?? null;
 
   return {
     installation,

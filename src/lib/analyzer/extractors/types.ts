@@ -2,15 +2,33 @@ import { RawMetadata } from "@/schema/metadataSchema";
 import { RawPackageJson } from "@/schema/packageJsonSchema";
 import { RawRepoTree } from "@/schema/treeSchema";
 
-interface TreeInfo {
-  language: string | null;
-  framework: string | null;
+// Tree
+interface TreeSignals {
   hasDocker: boolean;
   hasCI: boolean;
   hasTests: boolean;
-  entryPoint: string | null;
+  entryPoints: EntryPointValue[];
 }
 
+type ConfidenceLevel = "explicit" | "inferred" | "unknown";
+
+interface EntryPointValue {
+  value: string | null;
+  confidence: ConfidenceLevel;
+}
+
+interface TechHints {
+  language: {
+    value: string | null;
+    confidence: ConfidenceLevel;
+  };
+  framework: {
+    value: string | null;
+    confidence: ConfidenceLevel;
+  };
+}
+
+// Readme
 interface ReadmeInfo {
   title: string | null;
   description: string | null;
@@ -51,17 +69,26 @@ interface FrameworkSignature {
   runtime?: string;
 }
 
+type TechSignal = {
+  language?: { value: string; confidence: ConfidenceLevel };
+  framework?: { value: string; confidence: ConfidenceLevel };
+};
+
 interface DetectionPatterns {
-  configFiles: Map<string, { language?: string; framework?: string }>;
+  configFiles: Map<string, TechSignal>;
   testPatterns: RegExp[];
   ciPatterns: RegExp[];
   dockerPatterns: RegExp[];
-  entryPoints: Map<string, string[]>;
+  entryPointPatterns: RegExp[];
 }
 
 export type {
-  TreeInfo,
+  ConfidenceLevel,
+  TreeSignals,
+  TechHints,
+  EntryPointValue,
   DetectionPatterns,
+  TechSignal,
   ReadmeInfo,
   PackageInfo,
   FrameworkSignature,
