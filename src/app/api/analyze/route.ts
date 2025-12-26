@@ -10,7 +10,8 @@ import {
   extractMetadataInfo,
   extractPackageJsonInfo,
   extractReadmeInfo,
-  extractTreeInfo,
+  extractTechHints,
+  extractTreeSignal,
 } from "@/lib/analyzer/extractors";
 import {
   createIdentityContext,
@@ -20,7 +21,7 @@ import {
   createTechContext,
 } from "@/lib/analyzer/context";
 import { handleApiError, NotFoundError } from "@/lib/error";
-import { aiSummary } from "@/lib/analyzer/ai/analyze";
+import { runPrompt } from "@/lib/analyzer/ai/runPrompt";
 import { buildRepoAnalysisPrompt } from "@/lib/analyzer/ai/prompt";
 
 export async function GET(req: NextRequest) {
