@@ -13,11 +13,7 @@ export async function extractPackageJsonInfo(
 JSON.parse() converts a string JSON into JS object
 */
 
-  // try {
   parsed = packageJson;
-  // } catch (error) {
-  //   throw new Error("Invalid package.json: Unable to parse JSON");
-  // }
 
   /*
 Object.keys() returns an array of an object’s own property names (keys).

@@ -1,4 +1,3 @@
-
 import type { RawRepoTree } from "../../types";
 
 export const dummyTree: RawRepoTree = [
@@ -15,6 +14,11 @@ export const dummyTree: RawRepoTree = [
     path: "tsconfig.json",
     type: "blob",
   },
+  {
+    path: "next.config.ts",
+    type: "tree",
+  },
+
   {
     path: "Dockerfile",
     type: "blob",

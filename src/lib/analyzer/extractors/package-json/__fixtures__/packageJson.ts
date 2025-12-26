@@ -1,4 +1,4 @@
-export const dummyPackageJson = JSON.stringify({
+export const dummyPackageJson = {
   name: "devinsight-sample",
   version: "0.1.0",
   private: true,
@@ -17,4 +17,4 @@ export const dummyPackageJson = JSON.stringify({
     typescript: "^5.3.0",
     vitest: "^1.2.0",
   },
-});
+};
