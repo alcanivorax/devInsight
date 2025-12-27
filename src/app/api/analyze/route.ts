@@ -15,14 +15,17 @@ import {
 } from "@/lib/analyzer/extractors";
 import {
   createIdentityContext,
-  createRepoContext,
   createSetupContext,
   createStructureContext,
   createTechContext,
 } from "@/lib/analyzer/context";
 import { handleApiError, NotFoundError } from "@/lib/error";
-import { runPrompt } from "@/lib/analyzer/ai/runPrompt";
-import { buildRepoAnalysisPrompt } from "@/lib/analyzer/ai/prompt";
+import { assembleRepoAnalysis } from "@/lib/analyzer/assemble/assembleRepoAnalysis";
+import { mergeTechHintsWithPackageInfo } from "@/lib/analyzer/merge/mergeTechHintsWithPackageInfo";
+import { buildIdentityPrompt } from "@/lib/analyzer/ai/prompts/identity.prompt";
+import { buildSetupPrompt } from "@/lib/analyzer/ai/prompts/setup.prompt";
+import { buildTechPrompt } from "@/lib/analyzer/ai/prompts/tech.prompt";
+import { buildStructurePrompt } from "@/lib/analyzer/ai/prompts/structure.prompt";
 
 export async function GET(req: NextRequest) {
   try {
@@ -45,44 +48,65 @@ export async function GET(req: NextRequest) {
     const packageJson = await getRepoPackageJson(owner, repo);
     const tree = await getRepoTree(owner, repo);
 
-    if (!readme || !packageJson || !tree || !metadata) {
-      throw new NotFoundError("Repository data");
+    if (!readme) {
+      throw new NotFoundError("Readme");
+    }
+
+    if (!packageJson) {
+      throw new NotFoundError("Package Json");
     }
 
     // ─── Extract structured info ────────────────────
     const extractedReadme = await extractReadmeInfo(readme);
     const extractedMetadata = await extractMetadataInfo(metadata);
-    const extractedTree = await extractTreeInfo(tree);
+    const extractedTreeSignal = await extractTreeSignal(tree);
+    const extractedTechHints = await extractTechHints(tree);
     const extractedPackageJson = await extractPackageJsonInfo(packageJson);
+
+    // ─── Merge Extractors ─────────────────────────────
+    const mergeTechContext = mergeTechHintsWithPackageInfo(
+      extractedTechHints,
+      extractedPackageJson
+    );
 
     // ─── Build contexts ─────────────────────────────
     const identityContext = createIdentityContext(
       extractedReadme,
       extractedMetadata
     );
-    const techContext = createTechContext(extractedPackageJson);
-    const structureContext = createStructureContext(extractedTree);
+
+    const techContext = createTechContext(mergeTechContext);
+    const structureContext = createStructureContext(extractedTreeSignal);
     const setupContext = createSetupContext(
       extractedReadme,
       extractedPackageJson
     );
 
-    const repoContext = createRepoContext(
-      identityContext,
-      techContext,
-      structureContext,
-      setupContext
-    );
+    // ─── Build prompts ─────────────────────────────
+    const identity = await buildIdentityPrompt(identityContext);
+    const setup = await buildSetupPrompt(setupContext);
+    const tech = await buildTechPrompt(techContext);
+    const structure = await buildStructurePrompt(structureContext);
 
-    const prompt = buildRepoAnalysisPrompt(repoContext);
-    const aiResponse = await aiSummary(prompt);
+    const prompt = {
+      identity,
+      tech,
+      structure,
+      setup,
+    };
 
-    console.log(aiResponse);
+    // ─── Response ─────────────────────────────
+    const response = await assembleRepoAnalysis(prompt);
+
+    console.log(response.identity);
+    console.log(response.tech);
+    console.log(response.structure);
+    console.log(response.setup);
     // ─── Final response ─────────────────────────────
     return NextResponse.json(
       {
         success: true,
-        data: aiResponse,
+        data: response,
       },
       { status: 200 }
     );

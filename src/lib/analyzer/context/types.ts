@@ -1,4 +1,4 @@
-import { EntryPointValue, ConfidenceLevel } from "../extractors/types";
+import { EntryPointValue } from "../extractors/types";
 
 // Influenced by: extractReadmeInfo + extractMetadataInfo
 interface IdentityContext {

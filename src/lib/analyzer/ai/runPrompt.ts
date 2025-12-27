@@ -56,12 +56,19 @@ function extractTextContent(content: string | any[]): string | null {
 function extractJson(text: string): string {
   const trimmed = text.trim();
 
-  // Handle ```json ... ``` or ``` ... ```
+  // Strip ONLY the outer ``` fence if present
   if (trimmed.startsWith("```")) {
-    const match = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
-    if (match?.[1]) {
-      return match[1].trim();
+    const lines = trimmed.split("\n");
+
+    // Remove opening fence (``` or ```json)
+    lines.shift();
+
+    // Remove closing fence (```)
+    if (lines[lines.length - 1].trim() === "```") {
+      lines.pop();
     }
+
+    return lines.join("\n").trim();
   }
 
   return trimmed;

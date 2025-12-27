@@ -1,5 +1,9 @@
 import { RepoAnalysis } from "./types";
 import { runPrompt } from "@/lib/analyzer/ai/runPrompt";
+import { validateIdentityOutput } from "./identity.validate";
+import { validateTechOutput } from "./tech.validate";
+import { validateStructureOutput } from "./structure.validate";
+import { validateSetupOutput } from "./setup.validate";
 
 export async function assembleRepoAnalysis(prompts: {
   identity: string;

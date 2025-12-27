@@ -2,6 +2,8 @@ import { ReadmeInfo } from "../types";
 import { extractTitle } from "./extractTitle";
 import { extractSection } from "./extractSection";
 import { extractIntroParagraph } from "./extractIntroParagraph";
+import { extractCompositeSection } from "./extractCompositeSection";
+import { isMeaningfulDescription } from "@/helper/meaningfulDescription";
 
 export async function extractReadmeInfo(readme: string): Promise<ReadmeInfo> {
   // Normalize line endings and trim
@@ -11,7 +13,7 @@ export async function extractReadmeInfo(readme: string): Promise<ReadmeInfo> {
   const title = extractTitle(normalized);
 
   // Extract description section or fallback first paragraph only after title
-  const description =
+  const rawDescription =
     extractSection(normalized, [
       "about",
       "overview",
@@ -21,15 +23,27 @@ export async function extractReadmeInfo(readme: string): Promise<ReadmeInfo> {
       "why",
     ]) ?? extractIntroParagraph(normalized);
 
+  const description =
+    rawDescription && isMeaningfulDescription(rawDescription)
+      ? rawDescription
+      : null;
+
   // Extract installation section
-  const installation = extractSection(normalized, [
-    "installation",
-    "install",
-    "installing",
-    "setup",
-    "getting started",
-    "get started",
-  ]);
+  const installation = extractCompositeSection(normalized, {
+    headers: [
+      "installation",
+      "install",
+      "setup",
+      "getting started",
+      "prerequisites",
+      "running locally",
+    ],
+    mustIncludeAny: [
+      /git\s+clone/i,
+      /(npm|pnpm|yarn)\s+install/i,
+      /(npm|pnpm|yarn)\s+(dev|start)/i,
+    ],
+  });
 
   return { title, description, installation };
 }
