@@ -1,9 +1,11 @@
+import { RepoType } from "../classify/types";
 import { EntryPointValue } from "../extractors/types";
 
 // Influenced by: extractReadmeInfo + extractMetadataInfo
 interface IdentityContext {
   name: string | null;
   description: string | null;
+  repoType?: RepoType;
 }
 
 // Influenced by: extractPackageInfo

@@ -33,6 +33,7 @@ interface ReadmeInfo {
   title: string | null;
   description: string | null;
   installation: string | null;
+  raw?: string | null;
 }
 
 interface PackageInfo {
@@ -52,6 +53,8 @@ interface PackageInfo {
   dependencies: string[];
   devDependencies: string[];
   entryPoint: string | null;
+
+  bin?: Record<string, string>;
 }
 
 interface MetadataInfo {

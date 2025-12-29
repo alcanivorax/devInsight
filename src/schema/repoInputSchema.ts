@@ -3,5 +3,8 @@ import { githubRepoUrlSchema } from "./githubRepoUrlSchema";
 
 export const repoInputSchema = z.union([
   githubRepoUrlSchema,
-  z.string().regex(/^[^/]+\/[^/]+$/, "Invalid repo shorthand"),
+  z
+    .string()
+    .trim()
+    .regex(/^[^/]+\/[^/]+$/, "Invalid repo shorthand"),
 ]);

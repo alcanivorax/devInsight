@@ -1,9 +1,11 @@
+import { RepoClassification } from "../classify/types";
 import { MetadataInfo, ReadmeInfo } from "../extractors/types";
 import { IdentityContext } from "./types";
 
 export function createIdentityContext(
   readme: ReadmeInfo,
-  metadata: MetadataInfo
+  metadata: MetadataInfo,
+  classification: RepoClassification
 ): IdentityContext {
   const name = readme.title ?? metadata.name ?? null;
   const description = readme.description ?? metadata.description ?? null;
@@ -11,5 +13,6 @@ export function createIdentityContext(
   return {
     name,
     description,
+    repoType: classification.type,
   };
 }

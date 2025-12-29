@@ -26,6 +26,7 @@ import { buildIdentityPrompt } from "@/lib/analyzer/ai/prompts/identity.prompt";
 import { buildSetupPrompt } from "@/lib/analyzer/ai/prompts/setup.prompt";
 import { buildTechPrompt } from "@/lib/analyzer/ai/prompts/tech.prompt";
 import { buildStructurePrompt } from "@/lib/analyzer/ai/prompts/structure.prompt";
+import { classifyRepoType } from "@/lib/analyzer/classify/classifyRepoType";
 
 export async function GET(req: NextRequest) {
   try {
@@ -69,10 +70,18 @@ export async function GET(req: NextRequest) {
       extractedPackageJson
     );
 
+    // ─── Classification ─────────────────────────────
+    const classification = classifyRepoType({
+      packageInfo: extractedPackageJson,
+      treeSignals: extractedTreeSignal,
+      readme: extractedReadme,
+    });
+
     // ─── Build contexts ─────────────────────────────
     const identityContext = createIdentityContext(
       extractedReadme,
-      extractedMetadata
+      extractedMetadata,
+      classification
     );
 
     const techContext = createTechContext(mergeTechContext);

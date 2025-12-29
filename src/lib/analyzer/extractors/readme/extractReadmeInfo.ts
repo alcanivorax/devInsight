@@ -7,21 +7,21 @@ import { isMeaningfulDescription } from "@/helper/meaningfulDescription";
 
 export async function extractReadmeInfo(readme: string): Promise<ReadmeInfo> {
   // Normalize line endings and trim
-  const normalized = readme.replace(/\r\n/g, "\n").trim();
+  const normalizedReadme = readme.replace(/\r\n/g, "\n").trim();
 
   // Extract title (first h1 heading)
-  const title = extractTitle(normalized);
+  const title = extractTitle(normalizedReadme);
 
   // Extract description section or fallback first paragraph only after title
   const rawDescription =
-    extractSection(normalized, [
+    extractSection(normalizedReadme, [
       "about",
       "overview",
       "introduction",
       "description",
       "what is this",
       "why",
-    ]) ?? extractIntroParagraph(normalized);
+    ]) ?? extractIntroParagraph(normalizedReadme);
 
   const description =
     rawDescription && isMeaningfulDescription(rawDescription)
@@ -29,7 +29,7 @@ export async function extractReadmeInfo(readme: string): Promise<ReadmeInfo> {
       : null;
 
   // Extract installation section
-  const installation = extractCompositeSection(normalized, {
+  const installation = extractCompositeSection(normalizedReadme, {
     headers: [
       "installation",
       "install",
@@ -45,5 +45,5 @@ export async function extractReadmeInfo(readme: string): Promise<ReadmeInfo> {
     ],
   });
 
-  return { title, description, installation };
+  return { title, description, installation, raw: normalizedReadme };
 }
