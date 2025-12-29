@@ -19,7 +19,10 @@ interface TechContext {
 // Influenced by: extractTreeInfo (+ defaultBranch internally)
 interface StructureContext {
   overview: string[];
-  entryPoints?: EntryPointValue[];
+  entryPoints?: {
+    kind: "cli" | "library";
+    value: string;
+  }[];
 }
 
 // Influenced by: extractReadmeInfo + extractPackageInfo

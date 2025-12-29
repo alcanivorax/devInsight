@@ -1,20 +1,17 @@
-import { StructureContext } from "./types";
 import { TreeSignals } from "../extractors/types";
+import { StructuralEntryPoint } from "../resolve/resolveStructuralEntryPoints";
+import { StructureContext } from "./types";
 
-export function createStructureContext(tree: TreeSignals): StructureContext {
+export function createStructureContext(
+  tree: TreeSignals,
+  entryPoints: StructuralEntryPoint[]
+): StructureContext {
   const overview: string[] = [];
 
-  if (tree.hasDocker) {
-    overview.push("Docker configuration is present.");
-  }
-
-  if (tree.hasCI) {
-    overview.push("CI/CD configuration files are present.");
-  }
-
-  if (tree.hasTests) {
+  if (tree.hasDocker) overview.push("Docker configuration is present.");
+  if (tree.hasCI) overview.push("CI/CD configuration files are present.");
+  if (tree.hasTests)
     overview.push("Test-related files or directories are present.");
-  }
 
   if (overview.length === 0) {
     overview.push(
@@ -24,6 +21,6 @@ export function createStructureContext(tree: TreeSignals): StructureContext {
 
   return {
     overview,
-    entryPoints: tree.entryPoints.length > 0 ? tree.entryPoints : undefined,
+    entryPoints: entryPoints.length > 0 ? entryPoints : undefined,
   };
 }

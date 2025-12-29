@@ -27,6 +27,7 @@ import { buildSetupPrompt } from "@/lib/analyzer/ai/prompts/setup.prompt";
 import { buildTechPrompt } from "@/lib/analyzer/ai/prompts/tech.prompt";
 import { buildStructurePrompt } from "@/lib/analyzer/ai/prompts/structure.prompt";
 import { classifyRepoType } from "@/lib/analyzer/classify/classifyRepoType";
+import { resolveStructuralEntryPoints } from "@/lib/analyzer/resolve/resolveStructuralEntryPoints";
 
 export async function GET(req: NextRequest) {
   try {
@@ -77,6 +78,12 @@ export async function GET(req: NextRequest) {
       readme: extractedReadme,
     });
 
+    // ─── Resolve ─────────────────────────────
+    const resolvedEntryPoint = await resolveStructuralEntryPoints({
+      packageInfo: extractedPackageJson,
+      repoType: classification.type,
+    });
+
     // ─── Build contexts ─────────────────────────────
     const identityContext = createIdentityContext(
       extractedReadme,
@@ -85,7 +92,10 @@ export async function GET(req: NextRequest) {
     );
 
     const techContext = createTechContext(mergeTechContext);
-    const structureContext = createStructureContext(extractedTreeSignal);
+    const structureContext = createStructureContext(
+      extractedTreeSignal,
+      resolvedEntryPoint
+    );
     const setupContext = createSetupContext(
       extractedReadme,
       extractedPackageJson

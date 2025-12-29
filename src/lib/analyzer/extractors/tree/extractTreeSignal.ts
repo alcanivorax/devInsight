@@ -8,14 +8,12 @@ export function extractTreeSignal(tree: RawRepoTree): TreeSignals {
     hasDocker: false,
     hasCI: false,
     hasTests: false,
-    entryPoints: [],
   };
 
   const patterns = createDetectionPatterns();
   const normalizedPaths = tree.map((item) => item.path.toLowerCase());
 
   for (let i = 0; i < tree.length; i++) {
-    const path = tree[i].path;
     const normalized = normalizedPaths[i];
 
     // Detect Docker
@@ -40,16 +38,6 @@ export function extractTreeSignal(tree: RawRepoTree): TreeSignals {
       patterns.testPatterns.some((p) => p.test(normalized))
     ) {
       treeSignalInfo.hasTests = true;
-    }
-
-    // Detect entry point
-    const entryPoint = detectEntryPoint(path, patterns.entryPointPatterns);
-
-    if (
-      entryPoint &&
-      !treeSignalInfo.entryPoints.some((e) => e.value === entryPoint.value)
-    ) {
-      treeSignalInfo.entryPoints.push(entryPoint);
     }
   }
 

@@ -7,15 +7,14 @@ interface TreeSignals {
   hasDocker: boolean;
   hasCI: boolean;
   hasTests: boolean;
-  entryPoints: EntryPointValue[];
 }
 
 type ConfidenceLevel = "explicit" | "inferred" | "unknown";
 
-interface EntryPointValue {
-  value: string | null;
-  confidence: ConfidenceLevel;
-}
+type EntryPointValue =
+  | { kind: "runtime"; value: string }
+  | { kind: "cli"; value: string }
+  | { kind: "library"; value: string };
 
 interface TechHints {
   language: {
@@ -40,20 +39,26 @@ interface PackageInfo {
   name: string | null;
   version: string | null;
   description: string | null;
-  language: string;
+
+  language: string | null;
   framework: string | null;
   runtime: string | null;
   packageManager: string | null;
+
   scripts: {
     dev: string | null;
     build: string | null;
     start: string | null;
     test: string | null;
   };
+
   dependencies: string[];
   devDependencies: string[];
-  entryPoint: string | null;
 
+  // Declared entry intent
+  main?: string | null;
+  module?: string | null;
+  exports?: unknown;
   bin?: Record<string, string>;
 }
 
@@ -82,7 +87,6 @@ interface DetectionPatterns {
   testPatterns: RegExp[];
   ciPatterns: RegExp[];
   dockerPatterns: RegExp[];
-  entryPointPatterns: RegExp[];
 }
 
 export type {

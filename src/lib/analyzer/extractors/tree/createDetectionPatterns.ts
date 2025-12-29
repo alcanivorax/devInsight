@@ -155,61 +155,10 @@ export function createDetectionPatterns(): DetectionPatterns {
     /^\.dockerignore$/,
   ];
 
-  const entryPointPatterns: RegExp[] = [
-    // Common
-    /(^|\/)index\.(js|ts)$/i,
-    /(^|\/)main\.(js|ts|py|go|rs)$/i,
-    /(^|\/)app\.(js|ts|py|rb)$/i,
-    /(^|\/)server\.(js|ts)$/i,
-
-    // Framework / ecosystem hints
-    /(^|\/)src\/index\.(js|ts)$/i,
-    /(^|\/)__main__\.py$/i,
-    /(^|\/)manage\.py$/i,
-    /(^|\/)wsgi\.py$/i,
-    /(^|\/)cmd\/.*\/main\.go$/i,
-    /(^|\/)main\.rs$/i,
-    /(^|\/)config\.ru$/i,
-  ];
-
-  // const entryPoints = new Map([
-  //   [
-  //     "JavaScript",
-  //     [
-  //       "index.js",
-  //       "main.js",
-  //       "app.js",
-  //       "server.js",
-  //       "src/index.js",
-  //       "src/main.js",
-  //     ],
-  //   ],
-  //   [
-  //     "TypeScript",
-  //     [
-  //       "index.ts",
-  //       "main.ts",
-  //       "app.ts",
-  //       "server.ts",
-  //       "src/index.ts",
-  //       "src/main.ts",
-  //     ],
-  //   ],
-  //   [
-  //     "Python",
-  //     ["main.py", "app.py", "__main__.py", "run.py", "manage.py", "wsgi.py"],
-  //   ],
-  //   ["Go", ["main.go", "cmd/main.go"]],
-  //   ["Rust", ["src/main.rs", "main.rs"]],
-  //   ["Ruby", ["main.rb", "app.rb", "config.ru"]],
-  //   ["Java", ["Main.java", "Application.java", "App.java"]],
-  // ]);
-
   return {
     configFiles,
     testPatterns,
     ciPatterns,
     dockerPatterns,
-    entryPointPatterns,
   };
 }

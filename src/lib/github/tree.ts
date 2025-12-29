@@ -23,6 +23,7 @@ export async function getRepoTree(
     tree_sha: treeSha,
     recursive: "true", // IMPORTANT if you want full tree
   });
+  console.log(treeRes);
 
   // 🔐 Runtime validation
   return treeSchema.parse(treeRes.data.tree);

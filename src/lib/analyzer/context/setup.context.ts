@@ -1,17 +1,14 @@
+import { ReadmeInfo } from "../extractors/types";
+import { PackageInfo } from "../extractors/types";
+import { resolveRunCommand } from "../resolve/resolveRunCommand";
 import { SetupContext } from "./types";
-import { ReadmeInfo, PackageInfo } from "../extractors/types";
 
 export function createSetupContext(
   readme: ReadmeInfo,
-  packageJson: PackageInfo
+  packageInfo: PackageInfo
 ): SetupContext {
-  const installation = readme.installation ?? null;
-
-  const runCommand =
-    packageJson.scripts?.dev ?? packageJson.scripts?.start ?? null;
-
   return {
-    installation,
-    runCommand,
+    installation: readme.installation ?? null,
+    runCommand: resolveRunCommand(packageInfo),
   };
 }

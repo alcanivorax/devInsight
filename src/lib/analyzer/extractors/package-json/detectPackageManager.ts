@@ -1,15 +1,20 @@
 export function detectPackageManager(pkg: any): string | null {
-  // Check for lockfile indicators (if available in the parsed object)
-  if (pkg.packageManager) {
-    if (pkg.packageManager.startsWith("pnpm")) return "pnpm";
-    if (pkg.packageManager.startsWith("yarn")) return "yarn";
-    if (pkg.packageManager.startsWith("bun")) return "bun";
-    if (pkg.packageManager.startsWith("npm")) return "npm";
+  if (!pkg || typeof pkg !== "object") {
+    return null;
   }
 
-  // Check for workspace indicators
-  if (pkg.workspaces) return "npm"; // or could be yarn/pnpm
-  if (pkg.pnpm) return "pnpm";
+  // packageManager field is the most reliable indicator (Corepack standard)
+  if (typeof pkg.packageManager === "string") {
+    const pm = pkg.packageManager.toLowerCase();
+    if (pm.startsWith("pnpm@")) return "pnpm";
+    if (pm.startsWith("yarn@")) return "yarn";
+    if (pm.startsWith("bun@")) return "bun";
+    if (pm.startsWith("npm@")) return "npm";
+  }
 
-  return null; // Can't determine from package.json alone
+  if (pkg.pnpm?.overrides || pkg.pnpm?.patchedDependencies) {
+    return "pnpm";
+  }
+
+  return null;
 }
