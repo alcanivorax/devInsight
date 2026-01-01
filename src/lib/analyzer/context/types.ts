@@ -1,5 +1,4 @@
 import { RepoType } from "../classify/types";
-import { EntryPointValue } from "../extractors/types";
 
 // Influenced by: extractReadmeInfo + extractMetadataInfo
 interface IdentityContext {

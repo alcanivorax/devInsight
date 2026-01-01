@@ -12,9 +12,7 @@ export async function extractPackageJsonInfo(
   /*
 JSON.parse() converts a string JSON into JS object
 */
-
   parsed = packageJson;
-
   /*
 Object.keys() returns an array of an object’s own property names (keys).
 
@@ -58,7 +56,7 @@ output:
     },
     dependencies: deps,
     devDependencies: devDeps,
-    entryPoint: parsed.main || parsed.module || parsed.exports || null,
+    // entryPoint: parsed.main || parsed.module || parsed.exports || null,
 
     bin: parsed.bin ?? undefined,
   };

@@ -20,14 +20,14 @@ import {
   createTechContext,
 } from "@/lib/analyzer/context";
 import { handleApiError, NotFoundError } from "@/lib/error";
-import { assembleRepoAnalysis } from "@/lib/analyzer/assemble/assembleRepoAnalysis";
-import { mergeTechHintsWithPackageInfo } from "@/lib/analyzer/merge/mergeTechHintsWithPackageInfo";
-import { buildIdentityPrompt } from "@/lib/analyzer/ai/prompts/identity.prompt";
-import { buildSetupPrompt } from "@/lib/analyzer/ai/prompts/setup.prompt";
-import { buildTechPrompt } from "@/lib/analyzer/ai/prompts/tech.prompt";
-import { buildStructurePrompt } from "@/lib/analyzer/ai/prompts/structure.prompt";
-import { classifyRepoType } from "@/lib/analyzer/classify/classifyRepoType";
-import { resolveStructuralEntryPoints } from "@/lib/analyzer/resolve/resolveStructuralEntryPoints";
+import { assembleRepoAnalysis } from "@/lib/analyzer/assemble";
+import { mergeTechHintsWithPackageInfo } from "@/lib/analyzer/merge";
+import { buildIdentityPrompt } from "@/lib/analyzer/ai";
+import { buildSetupPrompt } from "@/lib/analyzer/ai";
+import { buildTechPrompt } from "@/lib/analyzer/ai";
+import { buildStructurePrompt } from "@/lib/analyzer/ai";
+import { classifyRepoType } from "@/lib/analyzer/classify";
+import { resolveStructuralEntryPoints } from "@/lib/analyzer/resolve";
 
 export async function GET(req: NextRequest) {
   try {
