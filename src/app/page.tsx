@@ -1,13 +1,10 @@
 "use client";
-import { useState } from "react";
+
+import { useState, KeyboardEvent } from "react";
 
 interface RepoAnalysis {
-  identity: {
-    summary: string;
-  };
-  tech: {
-    stack: string;
-  };
+  identity: { summary: string };
+  tech: { stack: string };
   structure: {
     overview: string[];
     entryPoints?: string[];
@@ -22,202 +19,164 @@ export default function HomePage() {
   const [url, setUrl] = useState("");
   const [data, setData] = useState<RepoAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
-  async function handleFetch() {
+  async function analyzeRepo() {
     if (!url.trim()) {
-      setError("Please enter a repository URL");
+      setError("Enter a GitHub repository URL.");
       return;
     }
 
     setLoading(true);
-    setError("");
+    setError(null);
     setData(null);
 
     try {
-      const response = await fetch(
-        `/api/analyze?repo=${encodeURIComponent(url)}`
-      );
+      const res = await fetch(`/api/analyze?repo=${encodeURIComponent(url)}`);
 
-      if (!response.ok) {
-        throw new Error(`Failed to analyze: ${response.statusText}`);
+      if (!res.ok) {
+        throw new Error("Analysis failed.");
       }
 
-      const json = await response.json();
-
-      if (json.error) {
-        throw new Error(json.error);
-      }
+      const json = await res.json();
+      if (json.error) throw new Error(json.error);
 
       setData(json.data);
-    } catch (err: any) {
-      setError(err.message || "Failed to analyze repository");
+    } catch (e: any) {
+      setError(e.message ?? "Something went wrong.");
     } finally {
       setLoading(false);
     }
   }
 
-  function handleKeyDown(e: any) {
-    if (e.key === "Enter" && !loading) {
-      handleFetch();
-    }
+  function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter" && !loading) analyzeRepo();
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
-      <div className="mx-auto max-w-4xl">
+    <div className="min-h-screen bg-[#0a0a0a] p-6">
+      <div className="mx-auto max-w-5xl">
         {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="mb-2 text-4xl font-bold text-slate-900">DevInsight</h1>
-          <p className="mb-1 text-slate-600">
-            A cautious repository analyzer that prefers being incomplete over
-            being wrong.
+        <header className="mb-12 text-center">
+          <h1 className="mb-2 text-4xl font-semibold tracking-tight text-slate-200">
+            dev<span className="text-slate-600">Insight</span>
+          </h1>
+          <p className="text-sm text-slate-500 max-w-xl mx-auto">
+            Understand any GitHub repository in minutes.
           </p>
-        </div>
+        </header>
 
         {/* Input */}
-        <div className="mb-6 flex gap-2">
-          <input
-            type="text"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="https://github.com/owner/repository"
-            disabled={loading}
-            className="flex-1 rounded-md border border-slate-300 bg-white text-black px-4 py-2 text-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 disabled:opacity-50 dark:text-black"
-          />
-          <button
-            onClick={handleFetch}
-            disabled={loading}
-            className="rounded-md bg-slate-900 px-6 py-2 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {loading ? "Analyzing..." : "Analyze →"}
-          </button>
-        </div>
+        <section className="mb-8 mx-auto max-w-2xl">
+          <div className="rounded-lg border border-slate-800 bg-[#111111] p-6">
+            <input
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              onKeyDown={onKeyDown}
+              disabled={loading}
+              placeholder="Paste a GitHub repository URL…"
+              className="mb-4 w-full bg-transparent font-mono text-sm text-slate-300 placeholder-slate-600 outline-none disabled:opacity-50"
+            />
 
-        {/* Error Message */}
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono text-slate-600">
+                Press Enter
+              </span>
+
+              <button
+                onClick={analyzeRepo}
+                disabled={loading}
+                className="rounded bg-slate-600 px-6 py-2.5 text-sm font-semibold text-black hover:bg-slate-500 disabled:opacity-50"
+              >
+                {loading ? "Analyzing…" : "Analyze"}
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Error */}
         {error && (
-          <div className="mb-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+          <div className="mx-auto mb-6 max-w-2xl rounded-lg border border-red-900/40 bg-red-950/20 p-4 text-sm text-red-400">
             {error}
           </div>
         )}
 
-        {/* Loading State */}
+        {/* Loading */}
         {loading && (
-          <div className="rounded-lg border border-slate-200 bg-white p-8 text-center">
-            <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-slate-900"></div>
-            <p className="text-slate-600">Analyzing repository...</p>
+          <div className="mx-auto max-w-2xl rounded-lg border border-slate-800 bg-[#111111] p-12 text-center">
+            <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-slate-800 border-t-slate-300" />
+            <p className="font-mono text-sm text-slate-400">
+              Analyzing repository…
+            </p>
           </div>
         )}
 
-        {/* Preview */}
+        {/* Results */}
         {!loading && data && (
-          <div className="space-y-4">
-            {/* Identity */}
-            <InfoCard title="Identity" content={data.identity.summary} />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <FeatureCard
+              icon="🔍"
+              title="Overview"
+              content={data.identity.summary}
+            />
 
-            {/* Tech Stack */}
-            <InfoCard title="Tech Stack" content={data.tech.stack} />
+            <FeatureCard
+              icon="⚡"
+              title="Tech Stack"
+              content={data.tech.stack}
+            />
 
-            {/* Structure */}
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-              <h3 className="mb-3 text-lg font-semibold text-slate-900">
-                Structure
-              </h3>
-              {data.structure.overview.length > 0 && (
-                <div className="mb-4">
-                  <h4 className="mb-2 text-sm font-medium text-slate-700">
-                    Overview
-                  </h4>
-                  <ul className="space-y-2">
-                    {data.structure.overview.map((item, i) => (
-                      <li key={i} className="flex gap-2 text-sm text-slate-600">
-                        <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-slate-400"></span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+            <Section title="Project Structure" icon="📁">
+              {data.structure.overview.map((item, i) => (
+                <div key={i} className="flex gap-2 text-sm text-slate-300">
+                  <span className="font-mono text-slate-600">▸</span>
+                  {item}
+                </div>
+              ))}
+
+              {data.structure.entryPoints && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {data.structure.entryPoints.map((e, i) => (
+                    <code
+                      key={i}
+                      className="rounded border border-slate-800 bg-slate-900 px-3 py-1.5 font-mono text-xs text-slate-300"
+                    >
+                      {e}
+                    </code>
+                  ))}
                 </div>
               )}
-              {data.structure.entryPoints &&
-                data.structure.entryPoints.length > 0 && (
-                  <div>
-                    <h4 className="mb-2 text-sm font-medium text-slate-700">
-                      Entry Points
-                    </h4>
-                    <ul className="space-y-2">
-                      {data.structure.entryPoints.map((item, i) => (
-                        <li
-                          key={i}
-                          className="flex gap-2 text-sm text-slate-600"
-                        >
-                          <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-400"></span>
-                          <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs">
-                            {item}
-                          </code>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-            </div>
+            </Section>
 
-            {/* Setup */}
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-              <h3 className="mb-3 text-lg font-semibold text-slate-900">
-                Setup
-              </h3>
+            <Section title="Setup" icon="⚙️">
+              <p>Installation Guide:</p>
               {data.setup.installation ? (
-                <div className="mb-4">
-                  <h4 className="mb-2 text-sm font-medium text-slate-700">
-                    Installation
-                  </h4>
-                  <code className="block rounded bg-slate-900 px-4 py-2 font-mono text-sm text-slate-100">
-                    {data.setup.installation}
-                  </code>
-                </div>
+                <pre className="mb-4 rounded border border-slate-900 bg-black p-4 font-mono text-sm text-slate-300">
+                  {data.setup.installation}
+                </pre>
               ) : (
-                <p className="mb-4 text-sm text-slate-500">
-                  No installation command found
+                <p className="mb-4 font-mono text-sm text-slate-300">
+                  No installation command found.
                 </p>
               )}
+              <p>Run Command: </p>
               {data.setup.runCommand && (
-                <div>
-                  <h4 className="mb-2 text-sm font-medium text-slate-700">
-                    Run Command
-                  </h4>
-                  <code className="block rounded bg-slate-900 px-4 py-2 font-mono text-sm text-slate-100">
-                    {data.setup.runCommand}
-                  </code>
-                </div>
+                <pre className="rounded border border-slate-900 bg-black p-4 font-mono text-sm text-slate-300">
+                  {data.setup.runCommand}
+                </pre>
               )}
-            </div>
+            </Section>
           </div>
         )}
 
-        {/* Empty State */}
+        {/* Empty */}
         {!loading && !data && !error && (
-          <div className="rounded-lg border border-slate-200 bg-white p-12 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
-              <svg
-                className="h-8 w-8 text-slate-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                />
-              </svg>
-            </div>
-            <h3 className="mb-2 text-lg font-medium text-slate-900">
-              Ready to analyze
+          <div className="mx-auto max-w-2xl rounded-lg border border-slate-800 bg-[#111111] p-16 text-center">
+            <h3 className="mb-2 text-lg font-semibold text-slate-300">
+              Ready when you are
             </h3>
-            <p className="text-sm text-slate-500">
-              Enter a GitHub repository URL above to get started
+            <p className="font-mono text-sm text-slate-500">
+              Paste a GitHub repository URL to begin.
             </p>
           </div>
         )}
@@ -226,11 +185,44 @@ export default function HomePage() {
   );
 }
 
-function InfoCard({ title, content }: { title: string; content: string }) {
+/* ---------- Small UI Primitives ---------- */
+
+function FeatureCard({
+  icon,
+  title,
+  content,
+}: {
+  icon: string;
+  title: string;
+  content: string;
+}) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 className="mb-3 text-lg font-semibold text-slate-900">{title}</h3>
-      <p className="text-sm leading-relaxed text-slate-700">{content}</p>
+    <div className="rounded-lg border border-slate-800 bg-[#111111] p-6">
+      <div className="mb-3 flex items-center gap-3">
+        <span className="text-xl">{icon}</span>
+        <h3 className="text-base font-semibold text-slate-300">{title}</h3>
+      </div>
+      <p className="text-sm leading-relaxed text-slate-300">{content}</p>
+    </div>
+  );
+}
+
+function Section({
+  title,
+  icon,
+  children,
+}: {
+  title: string;
+  icon: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="md:col-span-2 rounded-lg border border-slate-800 bg-[#111111] p-6">
+      <div className="mb-4 flex items-center gap-3">
+        <span className="text-xl">{icon}</span>
+        <h3 className="text-base font-semibold text-slate-300">{title}</h3>
+      </div>
+      <div className="space-y-2">{children}</div>
     </div>
   );
 }
