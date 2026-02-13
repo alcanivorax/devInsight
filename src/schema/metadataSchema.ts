@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 export const metadataSchema = z
   .object({
@@ -21,6 +21,6 @@ export const metadataSchema = z
     updatedAt: z.string().datetime(),
     pushedAt: z.string().datetime(),
   })
-  .strict();
+  .strict()
 
-export type RawMetadata = z.infer<typeof metadataSchema>;
+export type RawMetadata = z.infer<typeof metadataSchema>

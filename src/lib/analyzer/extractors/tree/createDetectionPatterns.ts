@@ -1,128 +1,128 @@
-import type { DetectionPatterns, TechSignal } from "../types";
+import type { DetectionPatterns, TechSignal } from '../types'
 
 export function createDetectionPatterns(): DetectionPatterns {
   const configFiles = new Map<string, TechSignal>([
     // JavaScript / TypeScript
     [
-      "package.json",
+      'package.json',
       {
-        language: { value: "JavaScript", confidence: "inferred" },
+        language: { value: 'JavaScript', confidence: 'inferred' },
       },
     ],
     [
-      "tsconfig.json",
+      'tsconfig.json',
       {
-        language: { value: "TypeScript", confidence: "explicit" },
+        language: { value: 'TypeScript', confidence: 'explicit' },
       },
     ],
     [
-      "next.config.js",
+      'next.config.js',
       {
-        framework: { value: "Next.js", confidence: "explicit" },
+        framework: { value: 'Next.js', confidence: 'explicit' },
       },
     ],
     [
-      "next.config.ts",
+      'next.config.ts',
       {
-        framework: { value: "Next.js", confidence: "explicit" },
+        framework: { value: 'Next.js', confidence: 'explicit' },
       },
     ],
     [
-      "vite.config.ts",
+      'vite.config.ts',
       {
-        framework: { value: "Vite", confidence: "explicit" },
+        framework: { value: 'Vite', confidence: 'explicit' },
       },
     ],
     [
-      "angular.json",
+      'angular.json',
       {
-        framework: { value: "Angular", confidence: "explicit" },
+        framework: { value: 'Angular', confidence: 'explicit' },
       },
     ],
 
     // Python
     [
-      "pyproject.toml",
+      'pyproject.toml',
       {
-        language: { value: "Python", confidence: "explicit" },
+        language: { value: 'Python', confidence: 'explicit' },
       },
     ],
     [
-      "requirements.txt",
+      'requirements.txt',
       {
-        language: { value: "Python", confidence: "inferred" },
+        language: { value: 'Python', confidence: 'inferred' },
       },
     ],
     [
-      "manage.py",
+      'manage.py',
       {
-        framework: { value: "Django", confidence: "explicit" },
+        framework: { value: 'Django', confidence: 'explicit' },
       },
     ],
 
     // Go
     [
-      "go.mod",
+      'go.mod',
       {
-        language: { value: "Go", confidence: "explicit" },
+        language: { value: 'Go', confidence: 'explicit' },
       },
     ],
 
     // Rust
     [
-      "cargo.toml",
+      'cargo.toml',
       {
-        language: { value: "Rust", confidence: "explicit" },
+        language: { value: 'Rust', confidence: 'explicit' },
       },
     ],
 
     // Java
     [
-      "pom.xml",
+      'pom.xml',
       {
-        language: { value: "Java", confidence: "explicit" },
-        framework: { value: "Maven", confidence: "explicit" },
+        language: { value: 'Java', confidence: 'explicit' },
+        framework: { value: 'Maven', confidence: 'explicit' },
       },
     ],
     [
-      "build.gradle",
+      'build.gradle',
       {
-        framework: { value: "Gradle", confidence: "explicit" },
+        framework: { value: 'Gradle', confidence: 'explicit' },
       },
     ],
 
     // Ruby
     [
-      "gemfile",
+      'gemfile',
       {
-        language: { value: "Ruby", confidence: "explicit" },
+        language: { value: 'Ruby', confidence: 'explicit' },
       },
     ],
 
     // PHP
     [
-      "composer.json",
+      'composer.json',
       {
-        language: { value: "PHP", confidence: "explicit" },
+        language: { value: 'PHP', confidence: 'explicit' },
       },
     ],
 
     // .NET
     [
-      ".csproj",
+      '.csproj',
       {
-        language: { value: "C#", confidence: "explicit" },
+        language: { value: 'C#', confidence: 'explicit' },
       },
     ],
 
     // Elixir
     [
-      "mix.exs",
+      'mix.exs',
       {
-        language: { value: "Elixir", confidence: "explicit" },
+        language: { value: 'Elixir', confidence: 'explicit' },
       },
     ],
-  ]);
+  ])
 
   const testPatterns = [
     /\/__tests__\//,
@@ -135,7 +135,7 @@ export function createDetectionPatterns(): DetectionPatterns {
     /_spec\.rb$/,
     /_test\.go$/,
     /\.test\.tsx?$/,
-  ];
+  ]
 
   const ciPatterns = [
     /^\.github\/workflows\//,
@@ -146,19 +146,19 @@ export function createDetectionPatterns(): DetectionPatterns {
     /^\.drone\.yml$/,
     /^azure-pipelines\.yml$/,
     /^bitbucket-pipelines\.yml$/,
-  ];
+  ]
 
   const dockerPatterns = [
     /^dockerfile$/,
     /^dockerfile\./,
     /^docker-compose\.ya?ml$/,
     /^\.dockerignore$/,
-  ];
+  ]
 
   return {
     configFiles,
     testPatterns,
     ciPatterns,
     dockerPatterns,
-  };
+  }
 }

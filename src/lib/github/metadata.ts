@@ -1,11 +1,11 @@
-import { octokit } from "./client";
-import type { RawMetadata } from "./types";
+import { octokit } from './client'
+import type { RawMetadata } from './types'
 
 export async function getRepoMetadata(
   owner: string,
   repo: string
 ): Promise<RawMetadata> {
-  const { data } = await octokit.rest.repos.get({ owner, repo });
+  const { data } = await octokit.rest.repos.get({ owner, repo })
   return {
     name: data.name,
     fullName: data.full_name,
@@ -25,5 +25,5 @@ export async function getRepoMetadata(
     createdAt: data.created_at,
     updatedAt: data.updated_at,
     pushedAt: data.pushed_at,
-  };
+  }
 }

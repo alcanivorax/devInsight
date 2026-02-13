@@ -3,17 +3,17 @@ export function detectLanguage(
   devDependencies: string[]
 ): string {
   const tsIndicators = [
-    "typescript",
-    "@types/node",
-    "ts-node",
-    "tsx",
-    "@typescript-eslint/parser",
-  ];
+    'typescript',
+    '@types/node',
+    'ts-node',
+    'tsx',
+    '@typescript-eslint/parser',
+  ]
 
-  const allDeps = [...dependencies, ...devDependencies];
+  const allDeps = [...dependencies, ...devDependencies]
   const hasTypeScript = tsIndicators.some((indicator) =>
     allDeps.includes(indicator)
-  );
+  )
 
-  return hasTypeScript ? "TypeScript" : "JavaScript";
+  return hasTypeScript ? 'TypeScript' : 'JavaScript'
 }

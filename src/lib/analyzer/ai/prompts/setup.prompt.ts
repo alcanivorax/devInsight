@@ -1,4 +1,4 @@
-import type { SetupContext } from "../../context/types";
+import type { SetupContext } from '../../context/types'
 
 export function buildSetupPrompt(context: SetupContext): string {
   return `
@@ -25,5 +25,5 @@ The JSON MUST match this schema exactly:
 
 Setup Context:
 ${JSON.stringify(context, null, 2)}
-`;
+`
 }

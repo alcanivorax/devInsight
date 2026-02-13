@@ -1,4 +1,4 @@
-export * from "./mergeTechHintsWithPackageInfo";
+export * from './mergeTechHintsWithPackageInfo'
 
 // types
-export * from "./types";
+export * from './types'

@@ -1,20 +1,20 @@
 export const dummyPackageJson = {
-  name: "devinsight-sample",
-  version: "0.1.0",
+  name: 'devinsight-sample',
+  version: '0.1.0',
   private: true,
-  description: "A dummy project for testing extractors",
+  description: 'A dummy project for testing extractors',
   scripts: {
-    dev: "next dev",
-    build: "next build",
-    start: "next start",
+    dev: 'next dev',
+    build: 'next build',
+    start: 'next start',
   },
   dependencies: {
-    next: "14.0.0",
-    react: "^18.2.0",
-    "react-dom": "^18.2.0",
+    next: '14.0.0',
+    react: '^18.2.0',
+    'react-dom': '^18.2.0',
   },
   devDependencies: {
-    typescript: "^5.3.0",
-    vitest: "^1.2.0",
+    typescript: '^5.3.0',
+    vitest: '^1.2.0',
   },
-};
+}

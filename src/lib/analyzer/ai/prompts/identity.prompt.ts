@@ -1,4 +1,4 @@
-import type { IdentityContext } from "../../context/types";
+import type { IdentityContext } from '../../context/types'
 
 export function buildIdentityPrompt(context: IdentityContext): string {
   return `
@@ -24,5 +24,5 @@ The JSON MUST match this schema exactly:
 
 Identity Context:
 ${JSON.stringify(context, null, 2)}
-`;
+`
 }

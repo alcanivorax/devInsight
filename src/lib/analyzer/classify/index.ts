@@ -1,4 +1,4 @@
-export * from "./classifyRepoType";
+export * from './classifyRepoType'
 
 // types
-export * from "./types";
+export * from './types'

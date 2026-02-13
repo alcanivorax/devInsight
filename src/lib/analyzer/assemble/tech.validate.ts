@@ -1,13 +1,13 @@
-import { ValidationError } from "@/lib/error";
+import { ValidationError } from '@/lib/error'
 
 export function validateTechOutput(raw: unknown): { stack: string } {
   if (
-    typeof raw !== "object" ||
+    typeof raw !== 'object' ||
     raw === null ||
-    typeof (raw as any).stack !== "string"
+    typeof (raw as any).stack !== 'string'
   ) {
-    throw new ValidationError("Invalid tech output", { raw });
+    throw new ValidationError('Invalid tech output', { raw })
   }
 
-  return raw as { stack: string };
+  return raw as { stack: string }
 }

@@ -1,38 +1,38 @@
 export function extractIntroParagraph(text: string): string | null {
-  const match = text.match(/^#\s+.+\n+([\s\S]*?)(?=\n#{2,6}\s|\Z)/m);
+  const match = text.match(/^#\s+.+\n+([\s\S]*?)(?=\n#{2,6}\s|\Z)/m)
 
-  if (!match) return null;
+  if (!match) return null
 
-  const block = match[1].trim();
-  if (!block) return null;
+  const block = match[1].trim()
+  if (!block) return null
 
   const paragraphs = block
-    .split("\n\n")
+    .split('\n\n')
     .map((p) => p.trim())
-    .filter(Boolean);
+    .filter(Boolean)
 
   for (const paragraph of paragraphs) {
     // Skip badges / images
     if (/^(\[!\[|!\[)/.test(paragraph) && !/[a-zA-Z]{3,}/.test(paragraph)) {
-      continue;
+      continue
     }
 
     // Skip lists
     if (/^[-*+]\s+/.test(paragraph)) {
-      continue;
+      continue
     }
 
     // Skip code blocks
     if (/^```/.test(paragraph)) {
-      continue;
+      continue
     }
 
     // Require actual prose
-    const wordCount = paragraph.split(/\s+/).length;
-    if (wordCount < 6) continue;
+    const wordCount = paragraph.split(/\s+/).length
+    if (wordCount < 6) continue
 
-    return paragraph;
+    return paragraph
   }
 
-  return null;
+  return null
 }

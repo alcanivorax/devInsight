@@ -1,4 +1,4 @@
-import type { StructureContext } from "../../context/types";
+import type { StructureContext } from '../../context/types'
 
 export function buildStructurePrompt(context: StructureContext): string {
   return `
@@ -23,5 +23,5 @@ Rules:
 
 Structure Context:
 ${JSON.stringify(context, null, 2)}
-`;
+`
 }

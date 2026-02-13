@@ -1,18 +1,18 @@
-import type { PackageInfo, RawPackageJson } from "../types";
-import { detectFramework } from "./detectFramework";
-import { detectLanguage } from "./detectLanguage";
-import { detectPackageManager } from "./detectPackageManager";
-import { detectRuntime } from "./detectRuntime";
+import type { PackageInfo, RawPackageJson } from '../types'
+import { detectFramework } from './detectFramework'
+import { detectLanguage } from './detectLanguage'
+import { detectPackageManager } from './detectPackageManager'
+import { detectRuntime } from './detectRuntime'
 
 export async function extractPackageJsonInfo(
   packageJson: RawPackageJson
 ): Promise<PackageInfo> {
-  let parsed: any;
+  let parsed: any
 
   /*
 JSON.parse() converts a string JSON into JS object
 */
-  parsed = packageJson;
+  parsed = packageJson
   /*
 Object.keys() returns an array of an object’s own property names (keys).
 
@@ -31,14 +31,14 @@ output:
 
 */
 
-  const deps = Object.keys(parsed.dependencies || {});
-  const devDeps = Object.keys(parsed.devDependencies || {});
-  const allDeps = [...deps, ...devDeps];
+  const deps = Object.keys(parsed.dependencies || {})
+  const devDeps = Object.keys(parsed.devDependencies || {})
+  const allDeps = [...deps, ...devDeps]
 
-  const framework = detectFramework(allDeps);
-  const runtime = detectRuntime(allDeps, parsed.engines);
-  const packageManager = detectPackageManager(parsed);
-  const language = detectLanguage(allDeps, devDeps);
+  const framework = detectFramework(allDeps)
+  const runtime = detectRuntime(allDeps, parsed.engines)
+  const packageManager = detectPackageManager(parsed)
+  const language = detectLanguage(allDeps, devDeps)
 
   return {
     name: parsed.name || null,
@@ -59,5 +59,5 @@ output:
     // entryPoint: parsed.main || parsed.module || parsed.exports || null,
 
     bin: parsed.bin ?? undefined,
-  };
+  }
 }

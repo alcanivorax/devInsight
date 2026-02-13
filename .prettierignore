@@ -1,0 +1,32 @@
+# dependencies
+node_modules
+
+# next build output
+.next
+out
+build
+dist
+
+# logs
+*.log
+
+# lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# coverage
+coverage
+
+# env files
+.env*
+!.env.example
+
+# generated code
+app/generated
+generated
+*.generated.*
+
+# misc
+.vercel
+.cache

@@ -1,20 +1,20 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 export const githubRepoUrlSchema = z
   .string()
-  .url("Invalid URL")
+  .url('Invalid URL')
   .refine((url) => {
     try {
-      const { hostname, pathname } = new URL(url);
-      if (hostname !== "github.com") return false;
+      const { hostname, pathname } = new URL(url)
+      if (hostname !== 'github.com') return false
 
       const parts = pathname
-        .replace(/\.git$/, "")
-        .split("/")
-        .filter(Boolean);
+        .replace(/\.git$/, '')
+        .split('/')
+        .filter(Boolean)
 
-      return parts.length >= 2;
+      return parts.length >= 2
     } catch {
-      return false;
+      return false
     }
-  }, "Not a valid GitHub repository URL");
+  }, 'Not a valid GitHub repository URL')

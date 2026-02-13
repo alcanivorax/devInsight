@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 export const packageJsonSchema = z.object({
   name: z.string().optional(),
@@ -10,6 +10,6 @@ export const packageJsonSchema = z.object({
   devDependencies: z.record(z.string(), z.string()).optional(),
 
   engines: z.record(z.string(), z.string()).optional(),
-});
+})
 
-export type RawPackageJson = z.infer<typeof packageJsonSchema>;
+export type RawPackageJson = z.infer<typeof packageJsonSchema>

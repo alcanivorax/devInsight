@@ -1,4 +1,4 @@
-import type { TechContext } from "../../context/types";
+import type { TechContext } from '../../context/types'
 
 export function buildTechPrompt(context: TechContext): string {
   return `
@@ -24,5 +24,5 @@ The JSON MUST match this schema exactly:
 
 Tech Context:
 ${JSON.stringify(context, null, 2)}
-`;
+`
 }

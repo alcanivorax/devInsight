@@ -1,61 +1,61 @@
-"use client";
+'use client'
 
-import type { KeyboardEvent } from "react";
-import { useState } from "react";
+import type { KeyboardEvent } from 'react'
+import { useState } from 'react'
 
 interface RepoAnalysis {
-  identity: { summary: string };
-  tech: { stack: string };
+  identity: { summary: string }
+  tech: { stack: string }
   structure: {
-    overview: string[];
-    entryPoints?: string[];
-  };
+    overview: string[]
+    entryPoints?: string[]
+  }
   setup: {
-    installation: string | null;
-    runCommand?: string | null;
-  };
+    installation: string | null
+    runCommand?: string | null
+  }
 }
 
 export default function HomePage() {
-  const [url, setUrl] = useState("");
-  const [data, setData] = useState<RepoAnalysis | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [url, setUrl] = useState('')
+  const [data, setData] = useState<RepoAnalysis | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function analyzeRepo() {
     if (!url.trim()) {
-      setError("Enter a GitHub repository URL.");
-      return;
+      setError('Enter a GitHub repository URL.')
+      return
     }
 
-    setLoading(true);
-    setError(null);
-    setData(null);
+    setLoading(true)
+    setError(null)
+    setData(null)
 
     try {
-      const res = await fetch(`/api/analyze?repo=${encodeURIComponent(url)}`);
+      const res = await fetch(`/api/analyze?repo=${encodeURIComponent(url)}`)
 
       if (!res.ok) {
-        throw new Error("Analysis failed.");
+        throw new Error('Analysis failed.')
       }
 
-      const json = await res.json();
-      if (json.error) throw new Error(json.error);
+      const json = await res.json()
+      if (json.error) throw new Error(json.error)
 
-      setData(json.data);
+      setData(json.data)
     } catch (e) {
       if (e instanceof Error) {
-        setError(e.message);
+        setError(e.message)
       } else {
-        setError("Something went wrong.");
+        setError('Something went wrong.')
       }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter" && !loading) analyzeRepo();
+    if (e.key === 'Enter' && !loading) analyzeRepo()
   }
 
   return (
@@ -93,7 +93,7 @@ export default function HomePage() {
                 disabled={loading}
                 className="rounded bg-slate-600 px-6 py-2.5 text-sm font-semibold text-black hover:bg-slate-500 disabled:opacity-50"
               >
-                {loading ? "Analyzing…" : "Analyze"}
+                {loading ? 'Analyzing…' : 'Analyze'}
               </button>
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function HomePage() {
         )}
       </div>
     </div>
-  );
+  )
 }
 
 /* ---------- Small UI Primitives ---------- */
@@ -197,9 +197,9 @@ function FeatureCard({
   title,
   content,
 }: {
-  icon: string;
-  title: string;
-  content: string;
+  icon: string
+  title: string
+  content: string
 }) {
   return (
     <div className="rounded-lg border border-slate-800 bg-[#111111] p-6">
@@ -209,7 +209,7 @@ function FeatureCard({
       </div>
       <p className="text-sm leading-relaxed text-slate-300">{content}</p>
     </div>
-  );
+  )
 }
 
 function Section({
@@ -217,9 +217,9 @@ function Section({
   icon,
   children,
 }: {
-  title: string;
-  icon: string;
-  children: React.ReactNode;
+  title: string
+  icon: string
+  children: React.ReactNode
 }) {
   return (
     <div className="md:col-span-2 rounded-lg border border-slate-800 bg-[#111111] p-6">
@@ -229,5 +229,5 @@ function Section({
       </div>
       <div className="space-y-2">{children}</div>
     </div>
-  );
+  )
 }

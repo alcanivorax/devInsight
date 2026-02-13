@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
-import "@/styles/globals.css";
-import { geistMono, geistSans } from "@/lib/font";
+import type { Metadata } from 'next'
+import '@/styles/globals.css'
+import { geistMono, geistSans } from '@/lib/font'
 
 export const metadata: Metadata = {
-  title: "DevInsight",
-  description: "A AI powered REPO analyzer",
-};
+  title: 'DevInsight',
+  description: 'A AI powered REPO analyzer',
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -20,5 +20,5 @@ export default function RootLayout({
         {children}
       </body>
     </html>
-  );
+  )
 }

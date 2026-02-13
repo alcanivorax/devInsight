@@ -1,21 +1,21 @@
-import { ValidationError } from "@/lib/error";
+import { ValidationError } from '@/lib/error'
 
 export function validateStructureOutput(raw: unknown): {
-  overview: string[];
-  entryPoints?: string[];
+  overview: string[]
+  entryPoints?: string[]
 } {
-  if (typeof raw !== "object" || raw === null) {
-    throw new ValidationError("Invalid structure output", { raw });
+  if (typeof raw !== 'object' || raw === null) {
+    throw new ValidationError('Invalid structure output', { raw })
   }
 
-  const obj = raw as any;
+  const obj = raw as any
 
   // overview: string[] (required)
   if (
     !Array.isArray(obj.overview) ||
-    !obj.overview.every((item: any) => typeof item === "string")
+    !obj.overview.every((item: any) => typeof item === 'string')
   ) {
-    throw new ValidationError("Invalid structure overview", { raw });
+    throw new ValidationError('Invalid structure overview', { raw })
   }
 
   // entryPoints?: string[]
@@ -23,13 +23,13 @@ export function validateStructureOutput(raw: unknown): {
     obj.entryPoints !== undefined &&
     obj.entryPoints !== null &&
     (!Array.isArray(obj.entryPoints) ||
-      !obj.entryPoints.every((item: any) => typeof item === "string"))
+      !obj.entryPoints.every((item: any) => typeof item === 'string'))
   ) {
-    throw new ValidationError("Invalid structure entryPoints", { raw });
+    throw new ValidationError('Invalid structure entryPoints', { raw })
   }
 
   return {
     overview: obj.overview,
     entryPoints: obj.entryPoints === undefined ? undefined : obj.entryPoints,
-  };
+  }
 }

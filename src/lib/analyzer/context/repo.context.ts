@@ -4,7 +4,7 @@ import type {
   SetupContext,
   StructureContext,
   TechContext,
-} from "./types";
+} from './types'
 
 export function createRepoContext(
   identity: IdentityContext,
@@ -17,5 +17,5 @@ export function createRepoContext(
     tech,
     structure,
     setup,
-  };
+  }
 }

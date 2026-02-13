@@ -1,5 +1,5 @@
-import type { MetadataInfo } from "../types";
-import type { RawMetadata } from "../types";
+import type { MetadataInfo } from '../types'
+import type { RawMetadata } from '../types'
 
 export async function extractMetadataInfo(
   metadata: RawMetadata
@@ -11,5 +11,5 @@ export async function extractMetadataInfo(
     topics: Array.isArray(metadata.topics) ? metadata.topics : [],
     license: metadata.license ?? null,
     defaultBranch: metadata.defaultBranch ?? null,
-  };
+  }
 }

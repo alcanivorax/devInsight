@@ -1,5 +1,5 @@
-export * from "./resolveStructuralEntryPoints";
-export * from "./resolveRunCommand";
+export * from './resolveStructuralEntryPoints'
+export * from './resolveRunCommand'
 
 // types
-export * from "./types";
+export * from './types'
