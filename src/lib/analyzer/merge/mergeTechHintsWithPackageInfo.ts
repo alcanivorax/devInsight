@@ -1,7 +1,7 @@
-import { TechHints } from "../extractors/types";
-import { PackageInfo } from "../extractors/types";
-import { ResolvedTechInfo } from "./types";
-import { EntryPointValue } from "../extractors/types";
+import type { TechHints } from "../extractors/types";
+import type { PackageInfo } from "../extractors/types";
+import type { ResolvedTechInfo } from "./types";
+import type { EntryPointValue } from "../extractors/types";
 
 function resolveValue(
   hint?: EntryPointValue,

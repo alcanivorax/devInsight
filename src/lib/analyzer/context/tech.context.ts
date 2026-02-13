@@ -1,5 +1,5 @@
-import { TechContext } from "./types";
-import { ResolvedTechInfo } from "../merge/types";
+import type { TechContext } from "./types";
+import type { ResolvedTechInfo } from "../merge/types";
 
 export function createTechContext(resolved: ResolvedTechInfo): TechContext {
   return {

@@ -1,4 +1,4 @@
-import { PackageInfo, RawPackageJson } from "../types";
+import type { PackageInfo, RawPackageJson } from "../types";
 import { detectFramework } from "./detectFramework";
 import { detectLanguage } from "./detectLanguage";
 import { detectPackageManager } from "./detectPackageManager";

@@ -1,7 +1,7 @@
-import { ReadmeInfo } from "../extractors/types";
-import { PackageInfo } from "../extractors/types";
+import type { ReadmeInfo } from "../extractors/types";
+import type { PackageInfo } from "../extractors/types";
 import { resolveRunCommand } from "../resolve/resolveRunCommand";
-import { SetupContext } from "./types";
+import type { SetupContext } from "./types";
 
 export function createSetupContext(
   readme: ReadmeInfo,

@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest} from "next/server";
+import { NextResponse } from "next/server";
 import { getRepoPackageJson } from "@/lib/github";
 import { handleApiError, NotFoundError } from "@/lib/error";
 import { parseRepoInput } from "@/lib/parseRepoInput";

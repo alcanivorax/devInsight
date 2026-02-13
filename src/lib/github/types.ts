@@ -1,3 +1,3 @@
-import { RawMetadata } from "@/schema/metadataSchema";
-import { RawPackageJson } from "@/schema/packageJsonSchema";
+import type { RawMetadata } from "@/schema/metadataSchema";
+import type { RawPackageJson } from "@/schema/packageJsonSchema";
 export type { RawMetadata, RawPackageJson };

@@ -1,6 +1,6 @@
-import { RawMetadata } from "@/schema/metadataSchema";
-import { RawPackageJson } from "@/schema/packageJsonSchema";
-import { RawRepoTree } from "@/schema/treeSchema";
+import type { RawMetadata } from "@/schema/metadataSchema";
+import type { RawPackageJson } from "@/schema/packageJsonSchema";
+import type { RawRepoTree } from "@/schema/treeSchema";
 
 // Tree
 interface TreeSignals {

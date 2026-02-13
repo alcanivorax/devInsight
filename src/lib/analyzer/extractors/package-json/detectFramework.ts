@@ -1,4 +1,4 @@
-import { FrameworkSignature } from "../types";
+import type { FrameworkSignature } from "../types";
 
 export function detectFramework(dependencies: string[]): string | null {
   const frameworks: FrameworkSignature[] = [

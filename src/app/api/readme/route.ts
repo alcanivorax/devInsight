@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { getRepoReadme } from "@/lib/github";
 import { parseRepoInput } from "@/lib/parseRepoInput";
 import { handleApiError, NotFoundError } from "@/lib/error";
@@ -27,6 +28,7 @@ export async function GET(req: NextRequest) {
       owner,
       repo,
       readme,
+      info,
     });
   } catch (error) {
     return handleApiError(error);

@@ -1,4 +1,4 @@
-import { DetectionPatterns, TechSignal } from "../types";
+import type { DetectionPatterns, TechSignal } from "../types";
 
 export function createDetectionPatterns(): DetectionPatterns {
   const configFiles = new Map<string, TechSignal>([

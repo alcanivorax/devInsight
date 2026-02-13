@@ -1,6 +1,6 @@
-import { TreeSignals } from "../extractors/types";
-import { StructuralEntryPoint } from "../resolve/resolveStructuralEntryPoints";
-import { StructureContext } from "./types";
+import type { TreeSignals } from "../extractors/types";
+import type { StructuralEntryPoint } from "../resolve/resolveStructuralEntryPoints";
+import type { StructureContext } from "./types";
 
 export function createStructureContext(
   tree: TreeSignals,

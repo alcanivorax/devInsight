@@ -1,7 +1,7 @@
-import { TreeSignals } from "../types";
+import type { TreeSignals } from "../types";
 import { createDetectionPatterns } from "./createDetectionPatterns";
 import { detectEntryPoint } from "./detectEntryPoint";
-import { RawRepoTree } from "../types";
+import type { RawRepoTree } from "../types";
 
 export function extractTreeSignal(tree: RawRepoTree): TreeSignals {
   const treeSignalInfo: TreeSignals = {

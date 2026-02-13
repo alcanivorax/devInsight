@@ -1,4 +1,4 @@
-import { TechContext } from "../../context/types";
+import type { TechContext } from "../../context/types";
 
 export function buildTechPrompt(context: TechContext): string {
   return `

@@ -1,5 +1,5 @@
-import { PackageInfo, TreeSignals, ReadmeInfo } from "../extractors/types";
-import { RepoClassification } from "./types";
+import type { PackageInfo, TreeSignals, ReadmeInfo } from "../extractors/types";
+import type { RepoClassification } from "./types";
 
 export function classifyRepoType(input: {
   packageInfo: PackageInfo | null;

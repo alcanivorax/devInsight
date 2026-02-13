@@ -1,4 +1,4 @@
-import { SetupContext } from "../../context/types";
+import type { SetupContext } from "../../context/types";
 
 export function buildSetupPrompt(context: SetupContext): string {
   return `

@@ -1,4 +1,4 @@
-import { StructureContext } from "../../context/types";
+import type { StructureContext } from "../../context/types";
 
 export function buildStructurePrompt(context: StructureContext): string {
   return `

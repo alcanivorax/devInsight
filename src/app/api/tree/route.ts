@@ -1,7 +1,8 @@
 import { handleApiError, NotFoundError } from "@/lib/error";
 import { getRepoTree } from "@/lib/github";
 import { parseRepoInput } from "@/lib/parseRepoInput";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest} from "next/server";
+import { NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {

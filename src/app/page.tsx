@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, KeyboardEvent } from "react";
+import type { KeyboardEvent } from "react";
+import { useState } from "react";
 
 interface RepoAnalysis {
   identity: { summary: string };
@@ -42,8 +43,12 @@ export default function HomePage() {
       if (json.error) throw new Error(json.error);
 
       setData(json.data);
-    } catch (e: any) {
-      setError(e.message ?? "Something went wrong.");
+    } catch (e) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Something went wrong.");
+      }
     } finally {
       setLoading(false);
     }

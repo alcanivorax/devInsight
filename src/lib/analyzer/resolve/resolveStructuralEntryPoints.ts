@@ -1,5 +1,5 @@
-import { RepoType } from "../classify/types";
-import { PackageInfo } from "../extractors/types";
+import type { RepoType } from "../classify/types";
+import type { PackageInfo } from "../extractors/types";
 
 export type StructuralEntryPoint =
   | { kind: "cli"; value: string }

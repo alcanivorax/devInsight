@@ -1,4 +1,4 @@
-import { DetectionPatterns, RawRepoTree, TechHints } from "../types";
+import type { DetectionPatterns, RawRepoTree, TechHints } from "../types";
 import { createDetectionPatterns } from "./createDetectionPatterns";
 import { detectTechFromConfigFiles } from "./detectTechFromConfigFiles";
 

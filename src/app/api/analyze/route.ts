@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { parseRepoInput } from "@/lib/parseRepoInput";
 import {
   getRepoMetadata,
@@ -32,17 +33,14 @@ import { resolveStructuralEntryPoints } from "@/lib/analyzer/resolve";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    console.log("this is url: ", req.url);
-    console.log("this is SearchParams: ", searchParams);
+
     const repoInput = searchParams.get("repo");
 
-    console.log("this si repoInput: ", repoInput);
     if (!repoInput) {
       throw new NotFoundError("Repository");
     }
 
     const { owner, repo } = parseRepoInput(repoInput);
-    console.log("this is owner and repo", owner, repo);
 
     // ─── Fetch raw data ─────────────────────────────
     const metadata = await getRepoMetadata(owner, repo);
@@ -117,10 +115,10 @@ export async function GET(req: NextRequest) {
     // ─── Response ─────────────────────────────
     const response = await assembleRepoAnalysis(prompt);
 
-    console.log(response.identity);
-    console.log(response.tech);
-    console.log(response.structure);
-    console.log(response.setup);
+    // console.log(response.identity);
+    // console.log(response.tech);
+    // console.log(response.structure);
+    // console.log(response.setup);
     // ─── Final response ─────────────────────────────
     return NextResponse.json(
       {

@@ -1,4 +1,4 @@
-import { TechHints, TechSignal } from "../types";
+import type { TechHints, TechSignal } from "../types";
 import { shouldOverride } from "@/helper/shouldOverride";
 
 export function detectTechFromConfigFiles(

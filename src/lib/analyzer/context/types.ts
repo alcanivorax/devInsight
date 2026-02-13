@@ -1,4 +1,4 @@
-import { RepoType } from "../classify/types";
+import type { RepoType } from "../classify/types";
 
 // Influenced by: extractReadmeInfo + extractMetadataInfo
 interface IdentityContext {

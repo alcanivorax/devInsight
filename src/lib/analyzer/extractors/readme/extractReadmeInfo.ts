@@ -1,4 +1,4 @@
-import { ReadmeInfo } from "../types";
+import type { ReadmeInfo } from "../types";
 import { extractTitle } from "./extractTitle";
 import { extractSection } from "./extractSection";
 import { extractIntroParagraph } from "./extractIntroParagraph";

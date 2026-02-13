@@ -1,4 +1,4 @@
-import { EntryPointValue } from "../types";
+import type { EntryPointValue } from "../types";
 
 export function detectEntryPoint(
   path: string,

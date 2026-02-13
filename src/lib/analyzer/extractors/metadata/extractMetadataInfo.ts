@@ -1,5 +1,5 @@
-import { MetadataInfo } from "../types";
-import { RawMetadata } from "../types";
+import type { MetadataInfo } from "../types";
+import type { RawMetadata } from "../types";
 
 export async function extractMetadataInfo(
   metadata: RawMetadata

@@ -1,6 +1,6 @@
-import { RepoClassification } from "../classify/types";
-import { MetadataInfo, ReadmeInfo } from "../extractors/types";
-import { IdentityContext } from "./types";
+import type { RepoClassification } from "../classify/types";
+import type { MetadataInfo, ReadmeInfo } from "../extractors/types";
+import type { IdentityContext } from "./types";
 
 export function createIdentityContext(
   readme: ReadmeInfo,

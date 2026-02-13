@@ -1,5 +1,5 @@
 // lib/errors.ts
-import { ErrorCode } from "./types";
+import type { ErrorCode } from "./types";
 
 export class AppError extends Error {
   public statusCode: number;

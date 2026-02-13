@@ -1,4 +1,4 @@
-import { IdentityContext } from "../../context/types";
+import type { IdentityContext } from "../../context/types";
 
 export function buildIdentityPrompt(context: IdentityContext): string {
   return `

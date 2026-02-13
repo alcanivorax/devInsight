@@ -1,4 +1,4 @@
-import { ConfidenceLevel } from "@/lib/analyzer/extractors/types";
+import type { ConfidenceLevel } from "@/lib/analyzer/extractors/types";
 
 export function shouldOverride(
   existing: { confidence: ConfidenceLevel } | undefined,
