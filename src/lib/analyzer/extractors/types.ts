@@ -11,10 +11,11 @@ interface TreeSignals {
 
 type ConfidenceLevel = 'explicit' | 'inferred' | 'unknown'
 
-type EntryPointValue =
-  | { kind: 'runtime'; value: string }
-  | { kind: 'cli'; value: string }
-  | { kind: 'library'; value: string }
+type EntryPointValue = { value: string | null; confidence: ConfidenceLevel }
+// type EntryPointValue =
+//   | { kind: 'runtime'; value: string }
+//   | { kind: 'cli'; value: string }
+//   | { kind: 'library'; value: string }
 
 interface TechHints {
   language: {

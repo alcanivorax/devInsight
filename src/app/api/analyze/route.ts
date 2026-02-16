@@ -59,8 +59,8 @@ export async function GET(req: NextRequest) {
     // ─── Extract structured info ────────────────────
     const extractedReadme = await extractReadmeInfo(readme)
     const extractedMetadata = await extractMetadataInfo(metadata)
-    const extractedTreeSignal = await extractTreeSignal(tree)
-    const extractedTechHints = await extractTechHints(tree)
+    const extractedTreeSignal = extractTreeSignal(tree)
+    const extractedTechHints = extractTechHints(tree)
     const extractedPackageJson = await extractPackageJsonInfo(packageJson)
 
     // ─── Merge Extractors ─────────────────────────────
@@ -77,7 +77,7 @@ export async function GET(req: NextRequest) {
     })
 
     // ─── Resolve ─────────────────────────────
-    const resolvedEntryPoint = await resolveStructuralEntryPoints({
+    const resolvedEntryPoint = resolveStructuralEntryPoints({
       packageInfo: extractedPackageJson,
       repoType: classification.type,
     })
@@ -100,10 +100,10 @@ export async function GET(req: NextRequest) {
     )
 
     // ─── Build prompts ─────────────────────────────
-    const identity = await buildIdentityPrompt(identityContext)
-    const setup = await buildSetupPrompt(setupContext)
-    const tech = await buildTechPrompt(techContext)
-    const structure = await buildStructurePrompt(structureContext)
+    const identity = buildIdentityPrompt(identityContext)
+    const setup = buildSetupPrompt(setupContext)
+    const tech = buildTechPrompt(techContext)
+    const structure = buildStructurePrompt(structureContext)
 
     const prompt = {
       identity,
