@@ -1,8 +1,11 @@
-import { handleApiError, NotFoundError } from '@/lib/error'
-import { getRepoTree } from '@/lib/github'
-import { parseRepoInput } from '@/lib/parseRepoInput'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
+import {
+  handleApiError,
+  NotFoundError,
+  getRepoTree,
+  parseRepoInput,
+} from '@devinsight/core'
 
 export async function GET(req: NextRequest) {
   try {

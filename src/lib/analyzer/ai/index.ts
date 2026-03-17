@@ -1,5 +1,0 @@
-export * from './prompts/identity.prompt'
-export * from './prompts/setup.prompt'
-export * from './prompts/structure.prompt'
-export * from './prompts/tech.prompt'
-export * from './runPrompt'

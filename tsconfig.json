@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@devinsight/core": ["./packages/core/src/index.ts"],
+      "@devinsight/core/*": ["./packages/core/src/*"]
     }
   },
   "include": [

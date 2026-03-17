@@ -1,9 +1,12 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { getRepoReadme } from '@/lib/github'
-import { parseRepoInput } from '@/lib/parseRepoInput'
-import { handleApiError, NotFoundError } from '@/lib/error'
-import { extractReadmeInfo } from '@/lib/analyzer/extractors'
+import {
+  getRepoReadme,
+  parseRepoInput,
+  handleApiError,
+  NotFoundError,
+  extractReadmeInfo,
+} from '@devinsight/core'
 
 export async function GET(req: NextRequest) {
   try {

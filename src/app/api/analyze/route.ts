@@ -1,39 +1,35 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { parseRepoInput } from '@/lib/parseRepoInput'
 import {
+  parseRepoInput,
   getRepoMetadata,
   getRepoPackageJson,
   getRepoReadme,
   getRepoTree,
-} from '@/lib/github'
-import {
   extractMetadataInfo,
   extractPackageJsonInfo,
   extractReadmeInfo,
-  extractTechHints,
   extractTreeSignal,
-} from '@/lib/analyzer/extractors'
-import {
+  extractTechHints,
+  mergeTechHintsWithPackageInfo,
+  classifyRepoType,
+  resolveStructuralEntryPoints,
   createIdentityContext,
-  createSetupContext,
-  createStructureContext,
   createTechContext,
-} from '@/lib/analyzer/context'
-import { handleApiError, NotFoundError } from '@/lib/error'
-import { assembleRepoAnalysis } from '@/lib/analyzer/assemble'
-import { mergeTechHintsWithPackageInfo } from '@/lib/analyzer/merge'
-import { buildIdentityPrompt } from '@/lib/analyzer/ai'
-import { buildSetupPrompt } from '@/lib/analyzer/ai'
-import { buildTechPrompt } from '@/lib/analyzer/ai'
-import { buildStructurePrompt } from '@/lib/analyzer/ai'
-import { classifyRepoType } from '@/lib/analyzer/classify'
-import { resolveStructuralEntryPoints } from '@/lib/analyzer/resolve'
+  createStructureContext,
+  createSetupContext,
+  buildIdentityPrompt,
+  buildTechPrompt,
+  buildStructurePrompt,
+  buildSetupPrompt,
+  assembleRepoAnalysis,
+  handleApiError,
+  NotFoundError,
+} from '@devinsight/core'
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-
     const repoInput = searchParams.get('repo')
 
     if (!repoInput) {
@@ -42,11 +38,13 @@ export async function GET(req: NextRequest) {
 
     const { owner, repo } = parseRepoInput(repoInput)
 
-    // ─── Fetch raw data ─────────────────────────────
-    const metadata = await getRepoMetadata(owner, repo)
-    const readme = await getRepoReadme(owner, repo)
-    const packageJson = await getRepoPackageJson(owner, repo)
-    const tree = await getRepoTree(owner, repo)
+    // ─── Fetch raw data ──────────────────────────────────────────────────────
+    const [metadata, readme, packageJson, tree] = await Promise.all([
+      getRepoMetadata(owner, repo),
+      getRepoReadme(owner, repo),
+      getRepoPackageJson(owner, repo),
+      getRepoTree(owner, repo),
+    ])
 
     if (!readme) {
       throw new NotFoundError('Readme')
@@ -56,77 +54,64 @@ export async function GET(req: NextRequest) {
       throw new NotFoundError('Package Json')
     }
 
-    // ─── Extract structured info ────────────────────
-    const extractedReadme = await extractReadmeInfo(readme)
-    const extractedMetadata = await extractMetadataInfo(metadata)
+    // ─── Extract structured info ─────────────────────────────────────────────
+    const [extractedReadme, extractedMetadata] = await Promise.all([
+      extractReadmeInfo(readme),
+      extractMetadataInfo(metadata),
+    ])
+
+    const extractedPackageJson = extractPackageJsonInfo(packageJson)
+
     const extractedTreeSignal = extractTreeSignal(tree)
     const extractedTechHints = extractTechHints(tree)
-    const extractedPackageJson = await extractPackageJsonInfo(packageJson)
 
-    // ─── Merge Extractors ─────────────────────────────
-    const mergeTechContext = mergeTechHintsWithPackageInfo(
+    // ─── Merge ───────────────────────────────────────────────────────────────
+    const mergedTech = mergeTechHintsWithPackageInfo(
       extractedTechHints,
       extractedPackageJson
     )
 
-    // ─── Classification ─────────────────────────────
+    // ─── Classify ────────────────────────────────────────────────────────────
     const classification = classifyRepoType({
       packageInfo: extractedPackageJson,
       treeSignals: extractedTreeSignal,
       readme: extractedReadme,
     })
 
-    // ─── Resolve ─────────────────────────────
-    const resolvedEntryPoint = resolveStructuralEntryPoints({
+    // ─── Resolve ─────────────────────────────────────────────────────────────
+    const resolvedEntryPoints = resolveStructuralEntryPoints({
       packageInfo: extractedPackageJson,
       repoType: classification.type,
     })
 
-    // ─── Build contexts ─────────────────────────────
+    // ─── Build contexts ───────────────────────────────────────────────────────
     const identityContext = createIdentityContext(
       extractedReadme,
       extractedMetadata,
       classification
     )
-
-    const techContext = createTechContext(mergeTechContext)
+    const techContext = createTechContext(mergedTech)
     const structureContext = createStructureContext(
       extractedTreeSignal,
-      resolvedEntryPoint
+      resolvedEntryPoints
     )
     const setupContext = createSetupContext(
       extractedReadme,
       extractedPackageJson
     )
 
-    // ─── Build prompts ─────────────────────────────
-    const identity = buildIdentityPrompt(identityContext)
-    const setup = buildSetupPrompt(setupContext)
-    const tech = buildTechPrompt(techContext)
-    const structure = buildStructurePrompt(structureContext)
-
-    const prompt = {
-      identity,
-      tech,
-      structure,
-      setup,
+    // ─── Build prompts ────────────────────────────────────────────────────────
+    const prompts = {
+      identity: buildIdentityPrompt(identityContext),
+      tech: buildTechPrompt(techContext),
+      structure: buildStructurePrompt(structureContext),
+      setup: buildSetupPrompt(setupContext),
     }
 
-    // ─── Response ─────────────────────────────
-    const response = await assembleRepoAnalysis(prompt)
+    // ─── Assemble & respond ───────────────────────────────────────────────────
+    const analysis = await assembleRepoAnalysis(prompts)
 
-    // console.log(response.identity);
-    // console.log(response.tech);
-    // console.log(response.structure);
-    // console.log(response.setup);
-    // ─── Final response ─────────────────────────────
-    return NextResponse.json(
-      {
-        success: true,
-        data: response,
-      },
-      { status: 200 }
-    )
+    return NextResponse.json({ success: true, data: analysis }, { status: 200 })
   } catch (error) {
     return handleApiError(error)
   }
