@@ -1,6 +1,12 @@
+type Engines = {
+  bun?: string
+  deno?: string
+  node?: string
+}
+
 export function detectRuntime(
   dependencies: string[],
-  engines?: any
+  engines: Engines
 ): string | null {
   // Check engines field first
   if (engines) {

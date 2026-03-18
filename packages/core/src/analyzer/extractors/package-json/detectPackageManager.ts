@@ -1,9 +1,6 @@
-export function detectPackageManager(pkg: any): string | null {
-  if (!pkg || typeof pkg !== 'object') {
-    return null
-  }
+import type { RawPackageJson } from '../types'
 
-  // packageManager field is the most reliable indicator (Corepack standard)
+export function detectPackageManager(pkg: RawPackageJson): string | null {
   if (typeof pkg.packageManager === 'string') {
     const pm = pkg.packageManager.toLowerCase()
     if (pm.startsWith('pnpm@')) return 'pnpm'
