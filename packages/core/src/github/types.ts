@@ -1,7 +1,4 @@
-import type { RawMetadata } from '../schemas/metadata.schema'
-import type { RawPackageJson } from '../schemas/packageJson.schema'
-import type { RawRepoTree } from '../schemas/tree.schema'
-import { treeSchema } from '../schemas/tree.schema'
-
-export type { RawMetadata, RawPackageJson, RawRepoTree }
-export { treeSchema }
+export * from '../schemas/metadata.schema'
+export * from '../schemas/packageJson.schema'
+export * from '../schemas/tree.schema'
+export * from '../schemas/tree.schema'

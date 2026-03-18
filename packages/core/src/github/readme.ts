@@ -1,4 +1,5 @@
 import { octokit } from './client'
+import { RequestError } from 'octokit'
 
 export async function getRepoReadme(
   owner: string,
@@ -10,8 +11,8 @@ export async function getRepoReadme(
     if (!res.data.content) return null
 
     return Buffer.from(res.data.content, 'base64').toString('utf-8')
-  } catch (err: any) {
-    if (err.status === 404) return null
+  } catch (err: unknown) {
+    if (err instanceof RequestError && err.status === 404) return null
     throw err
   }
 }

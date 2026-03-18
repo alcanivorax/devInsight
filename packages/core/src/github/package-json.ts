@@ -1,4 +1,5 @@
 import { octokit } from './client'
+import { RequestError } from 'octokit'
 import type { RawPackageJson } from './types'
 
 export async function getRepoPackageJson(
@@ -18,8 +19,8 @@ export async function getRepoPackageJson(
     }
 
     return null
-  } catch (err: any) {
-    if (err.status === 404) return null
+  } catch (err: unknown) {
+    if (err instanceof RequestError && err.status === 404) return null
     throw err
   }
 }
