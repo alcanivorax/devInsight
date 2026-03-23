@@ -1,11 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import {
-  parseRepoInput,
-  getRepoMetadata,
-  getRepoPackageJson,
-  getRepoReadme,
-  getRepoTree,
+  getRepoData,
   extractMetadataInfo,
   extractPackageJsonInfo,
   extractReadmeInfo,
@@ -36,21 +32,14 @@ export async function GET(req: NextRequest) {
       throw new NotFoundError('Repository')
     }
 
-    const { owner, repo } = parseRepoInput(repoInput)
-
     // ─── Fetch raw data ──────────────────────────────────────────────────────
-    const [metadata, readme, packageJson, tree] = await Promise.all([
-      getRepoMetadata(owner, repo),
-      getRepoReadme(owner, repo),
-      getRepoPackageJson(owner, repo),
-      getRepoTree(owner, repo),
-    ])
+    const { readme, pkg, tree, metadata } = await getRepoData(repoInput)
 
     if (!readme) {
       throw new NotFoundError('Readme')
     }
 
-    if (!packageJson) {
+    if (!pkg) {
       throw new NotFoundError('Package Json')
     }
 
@@ -60,7 +49,7 @@ export async function GET(req: NextRequest) {
       extractMetadataInfo(metadata),
     ])
 
-    const extractedPackageJson = extractPackageJsonInfo(packageJson)
+    const extractedPackageJson = extractPackageJsonInfo(pkg)
 
     const extractedTreeSignal = extractTreeSignal(tree)
     const extractedTechHints = extractTechHints(tree)
