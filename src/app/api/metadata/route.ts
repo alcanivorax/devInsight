@@ -6,6 +6,7 @@ import {
   parseRepoInput,
   getRepoMetadata,
 } from '@devinsight/core'
+import { getRepoLanguage } from '@devinsight/core/github/language'
 
 export async function GET(req: NextRequest) {
   try {
@@ -18,11 +19,12 @@ export async function GET(req: NextRequest) {
 
     const { owner, repo } = parseRepoInput(repoInput)
     const metadata = await getRepoMetadata(owner, repo)
-
+    const language = await getRepoLanguage(owner, repo)
     return NextResponse.json({
       owner,
       repo,
       metadata,
+      language,
     })
   } catch (error) {
     return handleApiError(error)

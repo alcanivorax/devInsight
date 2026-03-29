@@ -9,11 +9,17 @@ import type { RepoData } from '../types/repoData'
 
 export async function getRepoData(repoUrl: string): Promise<RepoData> {
   const { owner, repo } = parseGitHubRepoUrl(repoUrl)
-  const [readme, pkg, tree, metadata] = await Promise.all([
+
+  const metadata = await getRepoMetadata(owner, repo)
+  if (!metadata) {
+    throw new Error('Metadata is null')
+  }
+
+  const [readme, pkg, tree] = await Promise.all([
     getRepoReadme(owner, repo),
     getRepoPackageJson(owner, repo),
-    getRepoTree(owner, repo),
-    getRepoMetadata(owner, repo),
+    getRepoTree(owner, repo, metadata.defaultBranch),
   ])
+
   return { readme, pkg, tree, metadata }
 }

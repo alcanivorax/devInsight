@@ -3,8 +3,8 @@ import '@/styles/globals.css'
 import { geistMono, geistSans } from '@/lib/font'
 
 export const metadata: Metadata = {
-  title: 'DevInsight',
-  description: 'A AI powered REPO analyzer',
+  title: 'DevInsight - AI Repo Analyzer',
+  description: 'Understand GitHub repos instantly',
 }
 
 export default function RootLayout({

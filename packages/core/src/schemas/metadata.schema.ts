@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+// destructre into two layer. just fetching here.
+
 export const metadataSchema = z
   .object({
     name: z.string(),

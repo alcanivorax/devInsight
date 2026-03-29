@@ -11,5 +11,7 @@ export async function extractMetadataInfo(
     topics: Array.isArray(metadata.topics) ? metadata.topics : [],
     license: metadata.license ?? null,
     defaultBranch: metadata.defaultBranch ?? null,
+    stars: metadata.stars ?? null,
+    openIssues: metadata.openIssues ?? null,
   }
 }

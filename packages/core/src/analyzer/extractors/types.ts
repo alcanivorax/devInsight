@@ -78,6 +78,8 @@ interface MetadataInfo {
   topics: string[]
   license: string | null
   defaultBranch: string | null
+  stars: number | null
+  openIssues: number | null
 }
 
 // ─── Detection ───────────────────────────────────────────────────────────────

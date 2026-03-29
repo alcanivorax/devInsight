@@ -1,6 +1,6 @@
 import { octokit } from './client'
 import { RequestError } from 'octokit'
-import type { RawPackageJson } from './types'
+import { packageJsonSchema, type RawPackageJson } from './types'
 
 export async function getRepoPackageJson(
   owner: string,
@@ -15,11 +15,12 @@ export async function getRepoPackageJson(
 
     if ('content' in res.data) {
       const decoded = Buffer.from(res.data.content, 'base64').toString('utf-8')
-      return JSON.parse(decoded)
+      const parsed = JSON.parse(decoded)
+      return packageJsonSchema.parse(parsed)
     }
 
     return null
-  } catch (err: unknown) {
+  } catch (err) {
     if (err instanceof RequestError && err.status === 404) return null
     throw err
   }
