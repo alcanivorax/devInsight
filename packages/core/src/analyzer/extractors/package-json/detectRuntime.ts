@@ -2,7 +2,7 @@ type Engines = {
   bun?: string
   deno?: string
   node?: string
-}
+} | null
 
 export function detectRuntime(
   dependencies: string[],

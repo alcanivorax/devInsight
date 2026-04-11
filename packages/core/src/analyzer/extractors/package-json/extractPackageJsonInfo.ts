@@ -12,7 +12,7 @@ export function extractPackageJsonInfo(
   const allDeps = [...deps, ...devDeps]
 
   const framework = detectFramework(allDeps)
-  const runtime = detectRuntime(allDeps, packageJson.engines)
+  const runtime = detectRuntime(allDeps, packageJson.engines ?? null)
   const packageManager = detectPackageManager(packageJson)
   const language = detectLanguage(deps, devDeps)
 

@@ -1,107 +1,115 @@
-// import type { NextRequest } from 'next/server'
-// import { NextResponse } from 'next/server'
-// import {
-//   getRepoData,
-//   extractMetadataInfo,
-//   extractPackageJsonInfo,
-//   extractReadmeInfo,
-//   extractTreeSignal,
-//   extractTechHints,
-//   mergeTechHintsWithPackageInfo,
-//   classifyRepoType,
-//   resolveStructuralEntryPoints,
-//   createIdentityContext,
-//   createTechContext,
-//   createStructureContext,
-//   createSetupContext,
-//   buildIdentityPrompt,
-//   buildTechPrompt,
-//   buildStructurePrompt,
-//   buildSetupPrompt,
-//   assembleRepoAnalysis,
-//   handleApiError,
-//   NotFoundError,
-// } from '@devinsight/core'
+import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
+import {
+  getRepoData,
+  extractMetadataInfo,
+  extractPackageJsonInfo,
+  extractReadmeInfo,
+  extractTreeSignal,
+  extractTechHints,
+  mergeTechHintsWithPackageInfo,
+  classifyRepoType,
+  resolveStructuralEntryPoints,
+  createIdentityContext,
+  createTechContext,
+  createStructureContext,
+  createSetupContext,
+  buildIdentityPrompt,
+  buildTechPrompt,
+  buildStructurePrompt,
+  buildSetupPrompt,
+  assembleRepoAnalysis,
+  handleApiError,
+  NotFoundError,
+} from '@devinsight/core'
 
-// export async function GET(req: NextRequest) {
-//   try {
-//     const { searchParams } = new URL(req.url)
-//     const repoInput = searchParams.get('repo')
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url)
+    const repoInput = searchParams.get('repo')
 
-//     if (!repoInput) {
-//       throw new NotFoundError('Repository')
-//     }
+    if (!repoInput) {
+      throw new NotFoundError('Repository')
+    }
 
-//     // ─── Fetch raw data ──────────────────────────────────────────────────────
-//     const { readme, pkg, tree, metadata } = await getRepoData(repoInput)
+    // ─── Fetch raw data ──────────────────────────────────────────────────────
+    const { readme, pkg, tree, metadata } = await getRepoData(repoInput)
 
-//     if (!readme) {
-//       throw new NotFoundError('Readme')
-//     }
+    if (!readme) {
+      throw new NotFoundError('Readme')
+    }
 
-//     if (!pkg) {
-//       throw new NotFoundError('Package Json')
-//     }
+    if (!pkg) {
+      throw new NotFoundError('Package Json')
+    }
 
-//     // ─── Extract structured info ─────────────────────────────────────────────
-//     const [extractedReadme, extractedMetadata] = await Promise.all([
-//       extractReadmeInfo(readme),
-//       extractMetadataInfo(metadata),
-//     ])
+    if (!metadata) {
+      throw new NotFoundError('Metadata')
+    }
 
-//     const extractedPackageJson = extractPackageJsonInfo(pkg)
+    if (!tree) {
+      throw new NotFoundError('Tree Signal')
+    }
 
-//     const extractedTreeSignal = extractTreeSignal(tree)
-//     const extractedTechHints = extractTechHints(tree)
+    // ─── Extract structured info ─────────────────────────────────────────────
+    const [extractedReadme, extractedMetadata] = await Promise.all([
+      extractReadmeInfo(readme),
+      extractMetadataInfo(metadata),
+    ])
 
-//     // ─── Merge ───────────────────────────────────────────────────────────────
-//     const mergedTech = mergeTechHintsWithPackageInfo(
-//       extractedTechHints,
-//       extractedPackageJson
-//     )
+    const extractedPackageJson = extractPackageJsonInfo(pkg)
 
-//     // ─── Classify ────────────────────────────────────────────────────────────
-//     const classification = classifyRepoType({
-//       packageInfo: extractedPackageJson,
-//       treeSignals: extractedTreeSignal,
-//       readme: extractedReadme,
-//     })
+    const extractedTreeSignal = extractTreeSignal(tree)
+    const extractedTechHints = extractTechHints(tree)
 
-//     // ─── Resolve ─────────────────────────────────────────────────────────────
-//     const resolvedEntryPoints = resolveStructuralEntryPoints({
-//       packageInfo: extractedPackageJson,
-//       repoType: classification.type,
-//     })
+    // ─── Merge ───────────────────────────────────────────────────────────────
+    const mergedTech = mergeTechHintsWithPackageInfo(
+      extractedTechHints,
+      extractedPackageJson
+    )
 
-//     // ─── Build contexts ───────────────────────────────────────────────────────
-//     const identityContext = createIdentityContext(
-//       extractedReadme,
-//       extractedMetadata,
-//       classification
-//     )
-//     const techContext = createTechContext(mergedTech)
-//     const structureContext = createStructureContext(
-//       extractedTreeSignal,
-//       resolvedEntryPoints
-//     )
-//     const setupContext = createSetupContext(
-//       extractedReadme,
-//       extractedPackageJson
-//     )
+    // ─── Classify ────────────────────────────────────────────────────────────
+    const classification = classifyRepoType({
+      packageInfo: extractedPackageJson,
+      treeSignals: extractedTreeSignal,
+      readme: extractedReadme,
+    })
 
-//     // ─── Build prompts ────────────────────────────────────────────────────────
-//     const prompts = {
-//       identity: buildIdentityPrompt(identityContext),
-//       tech: buildTechPrompt(techContext),
-//       structure: buildStructurePrompt(structureContext),
-//       setup: buildSetupPrompt(setupContext),
-//     }
+    // ─── Resolve ─────────────────────────────────────────────────────────────
+    const resolvedEntryPoints = resolveStructuralEntryPoints({
+      packageInfo: extractedPackageJson,
+      repoType: classification.type,
+    })
 
-//     // ─── Assemble & respond ───────────────────────────────────────────────────
-//     const analysis = await assembleRepoAnalysis(prompts)
+    // ─── Build contexts ───────────────────────────────────────────────────────
+    const identityContext = createIdentityContext(
+      extractedReadme,
+      extractedMetadata,
+      classification
+    )
+    const techContext = createTechContext(mergedTech)
+    const structureContext = createStructureContext(
+      extractedTreeSignal,
+      resolvedEntryPoints
+    )
+    const setupContext = createSetupContext(
+      extractedReadme,
+      extractedPackageJson
+    )
 
-//     return NextResponse.json({ success: true, data: analysis }, { status: 200 })
-//   } catch (error) {
-//     return handleApiError(error)
-//   }
-// }
+    // ─── Build prompts ────────────────────────────────────────────────────────
+    const prompts = {
+      identity: buildIdentityPrompt(identityContext),
+      tech: buildTechPrompt(techContext),
+      structure: buildStructurePrompt(structureContext),
+      setup: buildSetupPrompt(setupContext),
+    }
+
+    // ─── Assemble & respond ───────────────────────────────────────────────────
+    const analysis = await assembleRepoAnalysis(prompts)
+
+    return NextResponse.json({ success: true, data: analysis }, { status: 200 })
+  } catch (error) {
+    return handleApiError(error)
+  }
+}
