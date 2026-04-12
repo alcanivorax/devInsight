@@ -1,147 +1,82 @@
 # DevInsight
 
-> A small tool to help understand GitHub repositories a bit faster.
+DevInsight analyzes a GitHub repository and returns structured insights about:
 
-DevInsight is an early-stage project that experiments with using AI to **summarize and explain GitHub repositories** in a more structured way.
+- repository identity
+- tech stack signals
+- project structure
+- setup guidance
 
-It focuses on extracting useful signals from a repo and presenting them clearly — without over-claiming or guessing.
-
----
-
-## Why DevInsight
-
-When exploring a new repository, you often have to:
-
-- Read a long README
-- Jump across folders
-- Guess how things fit together
-
-DevInsight tries to reduce that initial friction by giving a **quick, cautious overview** of a repo.
-
-It prefers being incomplete over being wrong.
-
----
-
-## What it currently does
-
-DevInsight analyzes a repository in small, separate parts:
-
-- **Basic identity**
-  Name, description, and general intent (app / library / tool)
-
-- **Tech stack hints**
-  Language, framework, runtime, and package manager — only when detectable from files
-
-- **Structure overview**
-  High-level folder signals and the presence of Docker, CI, or tests
-
-- **Setup notes**
-  Extracts the most common setup path when available, or states when setup is unclear or not intended for users
-
-Planned but not fully built yet:
-
-- File and folder click-through summaries (one level at a time)
-
----
-
-## How it works (high level)
-
-1. Fetches data from GitHub (metadata, tree, README, configs)
-2. Filters and normalizes that data into strict internal types
-3. Builds small context objects
-4. Sends only necessary context to the AI
-5. Validates the response before showing it
-
----
-
-## Project status
-
-This project is **work in progress**.
-
-- Core extraction: working
-- Structured AI output: working
-- UI and deeper exploration: ongoing
-
-Expect rough edges.
-
----
-
-## Tech stack
+## Stack
 
 - Next.js
 - TypeScript
-- GitHub REST API
-- AI via API (OpenRouter)
-- Zod for validation
+- `pnpm` workspace
+- Octokit (GitHub API)
+- Zod
+- OpenRouter (LLM calls)
 
----
+## Quick Start
 
-## Installation
+1. Clone the repo:
 
-### Prerequisites
+```bash
+git clone https://github.com/alcanivorax/devInsight
+cd devInsight
+```
 
-- **pnpm**
-  Install pnpm: [https://pnpm.io/installation](https://pnpm.io/installation)
+2. Install dependencies:
 
-### Setup
+```bash
+pnpm install
+```
 
-1. **Clone the repository**
+3. Configure environment:
 
-   Option 1: Clone directly
+```bash
+cp .env.example .env
+```
 
-   ```bash
-   git clone https://github.com/alcanivorax/devInsight
-   ```
+4. Run locally:
 
-   Option 2: Fork the repository and clone your fork
+```bash
+pnpm dev
+```
 
-2. **Move into the project directory**
+## Scripts
 
-   ```bash
-   cd devInsight
-   ```
+- `pnpm dev`
+- `pnpm build`
+- `pnpm start`
+- `pnpm lint`
+- `pnpm check-types`
+- `pnpm test`
+- `pnpm format`
+- `pnpm format:check`
 
-3. **Set up environment variables**
+## API Routes
 
-   ```bash
-   cp .env.example .env
-   ```
+- `GET /api/analyze`
+- `GET /api/readme`
+- `GET /api/package-json`
+- `GET /api/tree`
+- `GET /api/metadata`
 
-   Fill in the required variables in `.env`. Each variable includes a short description in the example file.
+## Documentation
 
-4. **Install dependencies**
+See [`docs/README.md`](docs/README.md) for detailed docs:
 
-   ```bash
-   pnpm install
-   ```
-
-5. **Run the development server**
-
-   ```bash
-   pnpm dev
-   ```
-
-The app should now be running locally.
-
----
+- architecture
+- API reference
+- environment variables
+- development workflow
+- testing and quality
 
 ## Contributing
 
-This project is still evolving, so contributions are super welcome...
-
-- Open issues for bugs, ideas, or improvements
-- Keep changes small and focused
-- Prefer clarity over cleverness
-
-More contribution guidelines will be added as the project stabilizes.
-
-### Branching
-
-- Create a new branch for each issue or change
-- Use a short, descriptive branch name  
-  (e.g. `fix-readme-parser`, `docs-env-vars`)
-- Open a pull request against `main`
+- Keep changes small and focused.
+- Run `pnpm format:check`, `pnpm lint`, `pnpm check-types`, and `pnpm test` before opening a PR.
 
 ## License
 
-`MIT`
+MIT
