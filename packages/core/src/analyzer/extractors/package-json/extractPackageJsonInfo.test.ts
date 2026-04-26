@@ -13,4 +13,15 @@ describe('extractPackageJsonInfo (smoke test)', () => {
     expect(result.devDependencies).toContain('typescript')
     expect(result.scripts.dev).toBe('next dev')
   })
+
+  it('normalizes string bin entries', () => {
+    const result = extractPackageJsonInfo({
+      name: 'sample-cli',
+      bin: './dist/cli.js',
+    })
+
+    expect(result.bin).toEqual({
+      'sample-cli': './dist/cli.js',
+    })
+  })
 })

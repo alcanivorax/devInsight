@@ -1,5 +1,5 @@
 import { RequestError } from 'octokit'
-import { octokit } from './client'
+import { getOctokit } from './client'
 import type { RawMetadata } from './types'
 
 export async function getRepoMetadata(
@@ -7,7 +7,7 @@ export async function getRepoMetadata(
   repo: string
 ): Promise<RawMetadata | null> {
   try {
-    const { data } = await octokit.rest.repos.get({ owner, repo })
+    const { data } = await getOctokit().rest.repos.get({ owner, repo })
     return {
       name: data.name,
       fullName: data.full_name,

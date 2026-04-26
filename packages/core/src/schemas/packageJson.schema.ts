@@ -18,7 +18,7 @@ export const packageJsonSchema = z.object({
   module: z.string().optional(),
   exports: z.unknown().optional(),
 
-  bin: z.record(z.string(), z.string()).optional(),
+  bin: z.union([z.string(), z.record(z.string(), z.string())]).optional(),
 
   pnpm: z
     .object({

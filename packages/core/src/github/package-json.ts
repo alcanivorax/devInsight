@@ -1,4 +1,4 @@
-import { octokit } from './client'
+import { getOctokit } from './client'
 import { RequestError } from 'octokit'
 import { packageJsonSchema, type RawPackageJson } from './types'
 
@@ -7,7 +7,7 @@ export async function getRepoPackageJson(
   repo: string
 ): Promise<RawPackageJson | null> {
   try {
-    const res = await octokit.rest.repos.getContent({
+    const res = await getOctokit().rest.repos.getContent({
       owner,
       repo,
       path: 'package.json',

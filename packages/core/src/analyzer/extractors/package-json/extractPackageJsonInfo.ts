@@ -15,6 +15,10 @@ export function extractPackageJsonInfo(
   const runtime = detectRuntime(allDeps, packageJson.engines ?? null)
   const packageManager = detectPackageManager(packageJson)
   const language = detectLanguage(deps, devDeps)
+  const bin =
+    typeof packageJson.bin === 'string'
+      ? { [packageJson.name ?? 'bin']: packageJson.bin }
+      : packageJson.bin
 
   return {
     name: packageJson.name ?? null,
@@ -35,6 +39,6 @@ export function extractPackageJsonInfo(
     main: packageJson.main ?? null,
     module: packageJson.module ?? null,
     exports: packageJson.exports,
-    bin: packageJson.bin,
+    bin,
   }
 }

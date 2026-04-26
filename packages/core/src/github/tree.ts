@@ -1,5 +1,5 @@
 import { RequestError } from 'octokit'
-import { octokit } from './client'
+import { getOctokit } from './client'
 import { treeSchema } from './types'
 import type { RawRepoTree } from './types'
 
@@ -11,9 +11,9 @@ export async function getRepoTree(
   try {
     const branch =
       defaultBranch ??
-      (await octokit.rest.repos.get({ owner, repo })).data.default_branch
+      (await getOctokit().rest.repos.get({ owner, repo })).data.default_branch
 
-    const branchRes = await octokit.rest.repos.getBranch({
+    const branchRes = await getOctokit().rest.repos.getBranch({
       owner,
       repo,
       branch,
@@ -21,7 +21,7 @@ export async function getRepoTree(
 
     const treeSha = branchRes.data.commit.commit.tree.sha
 
-    const treeRes = await octokit.rest.git.getTree({
+    const treeRes = await getOctokit().rest.git.getTree({
       owner,
       repo,
       tree_sha: treeSha,

@@ -1,4 +1,5 @@
 export * from './client'
+export * from './language'
 export * from './metadata'
 export * from './package-json'
 export * from './readme'

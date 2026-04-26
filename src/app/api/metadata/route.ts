@@ -5,8 +5,8 @@ import {
   NotFoundError,
   parseRepoInput,
   getRepoMetadata,
+  getRepoLanguage,
 } from '@devinsight/core'
-import { getRepoLanguage } from '@devinsight/core/github/language'
 
 export async function GET(req: NextRequest) {
   try {

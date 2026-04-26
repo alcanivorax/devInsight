@@ -1,4 +1,4 @@
-import { octokit } from './client'
+import { getOctokit } from './client'
 import { RequestError } from 'octokit'
 import type { RawLanguages } from './types'
 
@@ -7,7 +7,7 @@ export async function getRepoLanguage(
   repo: string
 ): Promise<RawLanguages | null> {
   try {
-    const res = await octokit.rest.repos.listLanguages({
+    const res = await getOctokit().rest.repos.listLanguages({
       owner,
       repo,
     })
