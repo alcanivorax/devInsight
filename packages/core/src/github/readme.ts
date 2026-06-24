@@ -1,4 +1,4 @@
-import { getOctokit } from './client'
+import { withGitHubAuthFallback } from './client'
 import { RequestError } from 'octokit'
 
 export async function getRepoReadme(
@@ -6,7 +6,9 @@ export async function getRepoReadme(
   repo: string
 ): Promise<string | null> {
   try {
-    const res = await getOctokit().rest.repos.getReadme({ owner, repo })
+    const res = await withGitHubAuthFallback((octokit) =>
+      octokit.rest.repos.getReadme({ owner, repo })
+    )
 
     if (!res.data.content) return null
 

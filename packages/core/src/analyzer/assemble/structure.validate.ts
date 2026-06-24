@@ -1,4 +1,5 @@
 import { ValidationError } from '../../error'
+import { normalizeStringArray } from './normalizeOutput'
 
 export function validateStructureOutput(raw: unknown): {
   overview: string[]
@@ -8,77 +9,34 @@ export function validateStructureOutput(raw: unknown): {
   featureSignals?: string[]
   complexity?: string[]
 } {
+  if (Array.isArray(raw)) {
+    const overview = normalizeStringArray(raw)
+    if (!overview) {
+      throw new ValidationError('Invalid structure overview', { raw })
+    }
+    return { overview }
+  }
+
   if (typeof raw !== 'object' || raw === null) {
     throw new ValidationError('Invalid structure output', { raw })
   }
 
   const obj = raw as Record<string, unknown>
+  const overview = normalizeStringArray(obj.overview)
 
-  if (
-    !Array.isArray(obj.overview) ||
-    !obj.overview.every((item: unknown) => typeof item === 'string')
-  ) {
+  if (!overview) {
     throw new ValidationError('Invalid structure overview', { raw })
   }
 
-  if (
-    obj.entryPoints !== undefined &&
-    obj.entryPoints !== null &&
-    (!Array.isArray(obj.entryPoints) ||
-      !obj.entryPoints.every((item: unknown) => typeof item === 'string'))
-  ) {
-    throw new ValidationError('Invalid structure entryPoints', { raw })
-  }
-
-  if (
-    obj.importantFiles !== undefined &&
-    (!Array.isArray(obj.importantFiles) ||
-      !obj.importantFiles.every((item: unknown) => typeof item === 'string'))
-  ) {
-    throw new ValidationError('Invalid structure important files', { raw })
-  }
-
-  if (
-    obj.architecture !== undefined &&
-    (!Array.isArray(obj.architecture) ||
-      !obj.architecture.every((item: unknown) => typeof item === 'string'))
-  ) {
-    throw new ValidationError('Invalid structure architecture', { raw })
-  }
-
-  if (
-    obj.featureSignals !== undefined &&
-    (!Array.isArray(obj.featureSignals) ||
-      !obj.featureSignals.every((item: unknown) => typeof item === 'string'))
-  ) {
-    throw new ValidationError('Invalid structure feature signals', { raw })
-  }
-
-  if (
-    obj.complexity !== undefined &&
-    (!Array.isArray(obj.complexity) ||
-      !obj.complexity.every((item: unknown) => typeof item === 'string'))
-  ) {
-    throw new ValidationError('Invalid structure complexity output', { raw })
-  }
-
   return {
-    overview: obj.overview as string[],
+    overview,
     entryPoints:
-      obj.entryPoints === undefined ? undefined : (obj.entryPoints as string[]),
-    importantFiles:
-      obj.importantFiles === undefined
+      obj.entryPoints === null
         ? undefined
-        : (obj.importantFiles as string[]),
-    architecture:
-      obj.architecture === undefined
-        ? undefined
-        : (obj.architecture as string[]),
-    featureSignals:
-      obj.featureSignals === undefined
-        ? undefined
-        : (obj.featureSignals as string[]),
-    complexity:
-      obj.complexity === undefined ? undefined : (obj.complexity as string[]),
+        : normalizeStringArray(obj.entryPoints),
+    importantFiles: normalizeStringArray(obj.importantFiles),
+    architecture: normalizeStringArray(obj.architecture),
+    featureSignals: normalizeStringArray(obj.featureSignals),
+    complexity: normalizeStringArray(obj.complexity),
   }
 }

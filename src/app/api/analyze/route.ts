@@ -14,7 +14,6 @@ export async function GET(req: NextRequest) {
     if (!repoInput) {
       throw new NotFoundError('Repository')
     }
-
     const analysis = await analyzeRepository(repoInput)
 
     return NextResponse.json({ success: true, data: analysis }, { status: 200 })

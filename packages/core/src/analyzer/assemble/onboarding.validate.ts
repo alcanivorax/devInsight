@@ -1,35 +1,39 @@
 import { ValidationError } from '../../error'
+import { normalizeStringArray } from './normalizeOutput'
 
 export function validateOnboardingOutput(raw: unknown): {
   startHere: string[]
   keySignals: string[]
   gaps: string[]
 } {
+  if (Array.isArray(raw)) {
+    const startHere = normalizeStringArray(raw)
+    if (!startHere) {
+      throw new ValidationError('Invalid onboarding startHere output', { raw })
+    }
+    return {
+      startHere,
+      keySignals: [],
+      gaps: [],
+    }
+  }
+
   if (typeof raw !== 'object' || raw === null) {
     throw new ValidationError('Invalid onboarding output', { raw })
   }
 
   const obj = raw as Record<string, unknown>
+  const startHere = normalizeStringArray(obj.startHere)
+  const keySignals = normalizeStringArray(obj.keySignals)
+  const gaps = normalizeStringArray(obj.gaps)
 
-  if (!isStringArray(obj.startHere)) {
+  if (!startHere && !keySignals && !gaps) {
     throw new ValidationError('Invalid onboarding startHere output', { raw })
   }
 
-  if (!isStringArray(obj.keySignals)) {
-    throw new ValidationError('Invalid onboarding keySignals output', { raw })
-  }
-
-  if (!isStringArray(obj.gaps)) {
-    throw new ValidationError('Invalid onboarding gaps output', { raw })
-  }
-
   return {
-    startHere: obj.startHere,
-    keySignals: obj.keySignals,
-    gaps: obj.gaps,
+    startHere: startHere ?? [],
+    keySignals: keySignals ?? [],
+    gaps: gaps ?? [],
   }
-}
-
-function isStringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every((item) => typeof item === 'string')
 }

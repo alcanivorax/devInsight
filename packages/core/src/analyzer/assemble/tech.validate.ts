@@ -1,39 +1,55 @@
 import { ValidationError } from '../../error'
+import { joinStringValues, normalizeStringArray } from './normalizeOutput'
 
 export function validateTechOutput(raw: unknown): {
   stack: string
   notableLibraries?: string[]
   dependencyInsights?: string[]
 } {
-  if (
-    typeof raw !== 'object' ||
-    raw === null ||
-    typeof (raw as Record<string, unknown>).stack !== 'string'
-  ) {
+  const rawStack = joinStringValues([raw])
+  if (rawStack && (typeof raw === 'string' || Array.isArray(raw))) {
+    return { stack: rawStack }
+  }
+
+  if (typeof raw !== 'object' || raw === null) {
     throw new ValidationError('Invalid tech output', { raw })
   }
 
   const obj = raw as Record<string, unknown>
+  const stack = normalizeStack(obj)
 
-  if (
-    obj.notableLibraries !== undefined &&
-    (!Array.isArray(obj.notableLibraries) ||
-      !obj.notableLibraries.every((item) => typeof item === 'string'))
-  ) {
-    throw new ValidationError('Invalid notable libraries output', { raw })
-  }
-
-  if (
-    obj.dependencyInsights !== undefined &&
-    (!Array.isArray(obj.dependencyInsights) ||
-      !obj.dependencyInsights.every((item) => typeof item === 'string'))
-  ) {
-    throw new ValidationError('Invalid dependency insights output', { raw })
+  if (!stack) {
+    throw new ValidationError('Invalid tech output', { raw })
   }
 
   return {
-    stack: obj.stack as string,
-    notableLibraries: obj.notableLibraries as string[] | undefined,
-    dependencyInsights: obj.dependencyInsights as string[] | undefined,
+    stack,
+    notableLibraries: normalizeStringArray(obj.notableLibraries),
+    dependencyInsights: normalizeStringArray(obj.dependencyInsights),
   }
+}
+
+function normalizeStack(obj: Record<string, unknown>): string | null {
+  const stack = obj.stack
+  if (typeof stack === 'string' && stack.trim()) {
+    return stack.trim()
+  }
+  if (Array.isArray(stack)) {
+    return joinStringValues(stack)
+  }
+
+  return (
+    joinStringValues([
+      obj.language,
+      obj.languages,
+      obj.framework,
+      obj.frameworks,
+      obj.runtime,
+      obj.runtimes,
+      obj.packageManager,
+      obj.packageManagers,
+      obj.techStack,
+      obj.technologies,
+    ]) ?? null
+  )
 }

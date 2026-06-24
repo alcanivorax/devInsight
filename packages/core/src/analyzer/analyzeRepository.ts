@@ -1,6 +1,7 @@
-import { NotFoundError } from '../error'
+import { ExternalServiceError, NotFoundError, ValidationError } from '../error'
 import { getRepoData } from '../github'
 import { assembleRepoAnalysis, type RepoAnalysis } from './assemble'
+import { createFallbackRepoAnalysis } from './assemble/fallbackRepoAnalysis'
 import {
   buildIdentityPrompt,
   buildOnboardingPrompt,
@@ -82,11 +83,27 @@ export async function analyzeRepository(
     setup: setupContext,
   })
 
-  return assembleRepoAnalysis({
-    identity: buildIdentityPrompt(identityContext),
-    tech: buildTechPrompt(techContext),
-    structure: buildStructurePrompt(structureContext),
-    setup: buildSetupPrompt(setupContext),
-    onboarding: buildOnboardingPrompt(onboardingContext),
-  })
+  try {
+    return await assembleRepoAnalysis({
+      identity: buildIdentityPrompt(identityContext),
+      tech: buildTechPrompt(techContext),
+      structure: buildStructurePrompt(structureContext),
+      setup: buildSetupPrompt(setupContext),
+      onboarding: buildOnboardingPrompt(onboardingContext),
+    })
+  } catch (error) {
+    if (
+      error instanceof ExternalServiceError ||
+      error instanceof ValidationError
+    ) {
+      return createFallbackRepoAnalysis({
+        identity: identityContext,
+        tech: techContext,
+        structure: structureContext,
+        setup: setupContext,
+        onboarding: onboardingContext,
+      })
+    }
+    throw error
+  }
 }

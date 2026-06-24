@@ -18,6 +18,8 @@ Rules:
 - Avoid listing every dependency; explain what the important dependencies imply.
 - Output ONLY valid JSON.
 - Do NOT include explanations or extra text.
+- "stack" MUST be a single string, not an array or object.
+- "notableLibraries" and "dependencyInsights" MUST be arrays of strings.
 
 The JSON MUST match this schema exactly:
 

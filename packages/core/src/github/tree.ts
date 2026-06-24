@@ -1,5 +1,5 @@
 import { RequestError } from 'octokit'
-import { getOctokit } from './client'
+import { withGitHubAuthFallback } from './client'
 import { treeSchema } from './types'
 import type { RawRepoTree } from './types'
 
@@ -11,22 +11,30 @@ export async function getRepoTree(
   try {
     const branch =
       defaultBranch ??
-      (await getOctokit().rest.repos.get({ owner, repo })).data.default_branch
+      (
+        await withGitHubAuthFallback((octokit) =>
+          octokit.rest.repos.get({ owner, repo })
+        )
+      ).data.default_branch
 
-    const branchRes = await getOctokit().rest.repos.getBranch({
-      owner,
-      repo,
-      branch,
-    })
+    const branchRes = await withGitHubAuthFallback((octokit) =>
+      octokit.rest.repos.getBranch({
+        owner,
+        repo,
+        branch,
+      })
+    )
 
     const treeSha = branchRes.data.commit.commit.tree.sha
 
-    const treeRes = await getOctokit().rest.git.getTree({
-      owner,
-      repo,
-      tree_sha: treeSha,
-      recursive: 'true',
-    })
+    const treeRes = await withGitHubAuthFallback((octokit) =>
+      octokit.rest.git.getTree({
+        owner,
+        repo,
+        tree_sha: treeSha,
+        recursive: 'true',
+      })
+    )
 
     if (treeRes.data.truncated) {
       throw new Error(`Repository tree is truncated for ${owner}/${repo}`)

@@ -1,4 +1,4 @@
-import { getOctokit } from './client'
+import { withGitHubAuthFallback } from './client'
 import { RequestError } from 'octokit'
 import { packageJsonSchema, type RawPackageJson } from './types'
 
@@ -7,11 +7,13 @@ export async function getRepoPackageJson(
   repo: string
 ): Promise<RawPackageJson | null> {
   try {
-    const res = await getOctokit().rest.repos.getContent({
-      owner,
-      repo,
-      path: 'package.json',
-    })
+    const res = await withGitHubAuthFallback((octokit) =>
+      octokit.rest.repos.getContent({
+        owner,
+        repo,
+        path: 'package.json',
+      })
+    )
 
     if ('content' in res.data) {
       const decoded = Buffer.from(res.data.content, 'base64').toString('utf-8')
