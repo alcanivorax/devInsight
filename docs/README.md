@@ -14,6 +14,8 @@ Documentation index for contributors and maintainers.
   - Local setup and day-to-day development commands.
 - `testing-and-quality.md`
   - Quality gates, test expectations, and verification sequence.
+- `analysis-quality.md`
+  - Standards for evidence-based, repository-specific output.
 
 ## Related root docs
 

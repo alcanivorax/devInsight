@@ -1,81 +1,81 @@
 # DevInsight
 
-DevInsight analyzes a GitHub repository and returns structured insights about:
+DevInsight analyzes a public GitHub repository and turns raw repository signals
+into a structured technical brief. It is built for quick codebase orientation:
+what the project is, what technologies matter, how it is structured, how to run
+it, and where a developer should start reading.
 
-- repository identity
-- tech stack signals
-- project structure
-- setup guidance
+## What It Produces
+
+- Repository identity and likely audience
+- Technology stack and important dependency signals
+- Architecture, feature, and complexity signals from the repository tree
+- Setup and run guidance from README/package scripts
+- Developer onboarding recommendations with concrete files and directories
 
 ## Stack
 
-- Next.js
-- TypeScript
-- `pnpm` workspace
-- Octokit (GitHub API)
-- Zod
-- OpenRouter (LLM calls)
+- Next.js app router
+- TypeScript + pnpm workspace
+- Octokit for GitHub API access
+- OpenRouter for model calls
+- Zod-style validation and typed API errors
 
 ## Quick Start
 
-1. Clone the repo:
-
-```bash
-git clone https://github.com/alcanivorax/devInsight
-cd devInsight
-```
-
-2. Install dependencies:
-
 ```bash
 pnpm install
-```
-
-3. Configure environment:
-
-```bash
 cp .env.example .env
-```
-
-4. Run locally:
-
-```bash
 pnpm dev
 ```
 
-## Scripts
+Then open the local Next.js URL and analyze a repository such as:
 
-- `pnpm dev`
-- `pnpm build`
-- `pnpm start`
-- `pnpm lint`
-- `pnpm check-types`
-- `pnpm test`
-- `pnpm format`
-- `pnpm format:check`
+```text
+https://github.com/fastify/fastify
+```
 
-## API Routes
+## Environment
 
-- `GET /api/analyze`
-- `GET /api/readme`
-- `GET /api/package-json`
-- `GET /api/tree`
-- `GET /api/metadata`
+Set these values in `.env`:
 
-## Documentation
+- `GITHUB_TOKEN` - GitHub token for repository metadata, README, package, and tree fetches.
+- `OPENROUTER_API_KEY` - OpenRouter API key for LLM analysis.
+- `OPENROUTER_MODEL` - model id used for analysis prompts.
 
-See [`docs/README.md`](docs/README.md) for detailed docs:
+Auth/database variables are only required when working on auth-related routes.
+See [docs/environment.md](docs/environment.md).
 
-- architecture
-- API reference
-- environment variables
-- development workflow
-- testing and quality
+## Main Commands
 
-## Contributing
+```bash
+pnpm dev
+pnpm format:check
+pnpm lint
+pnpm check-types
+pnpm test
+```
 
-- Keep changes small and focused.
-- Run `pnpm format:check`, `pnpm lint`, `pnpm check-types`, and `pnpm test` before opening a PR.
+## Architecture
+
+The app keeps transport and analysis separate:
+
+- `src/app/api/*` handles HTTP routes.
+- `packages/core/src/github/*` fetches GitHub data.
+- `packages/core/src/analyzer/analyzeRepository.ts` owns the repository analysis pipeline.
+- `packages/core/src/analyzer/extractors/*` derives deterministic signals.
+- `packages/core/src/analyzer/context/*` builds model context.
+- `packages/core/src/analyzer/ai/*` builds prompts and runs model calls.
+- `packages/core/src/analyzer/assemble/*` validates final structured output.
+
+More detail lives in [docs/README.md](docs/README.md).
+
+## Current MVP Limits
+
+- Claims do not yet include clickable source provenance.
+- The analyzer mostly uses README, package metadata, repo metadata, and tree paths.
+- It does not yet fetch and summarize important source files.
+- Model output depends on valid OpenRouter configuration and JSON-compliant responses.
 
 ## License
 

@@ -20,6 +20,7 @@ Priority order:
 - Schemas: `packages/core/src/schemas/`
 - GitHub fetch layer: `packages/core/src/github/`
 - Analysis pipeline: `packages/core/src/analyzer/`
+- Pipeline entry point: `packages/core/src/analyzer/analyzeRepository.ts`
 
 ## Architectural boundaries
 
@@ -28,17 +29,40 @@ Priority order:
   - Keep request/error handling here.
   - Avoid mixing heavy business extraction logic into this layer.
 
+- `packages/core/src/analyzer/analyzeRepository.ts`
+  - Own the end-to-end repository analysis pipeline.
+  - Keep API routes thin; routes should parse transport input and delegate here.
+  - Coordinate fetch, extraction, context, prompt building, AI assembly, and validation.
+
 - `packages/core/src/analyzer/extractors/*`
   - Convert raw fetched inputs into stable internal shapes.
   - Handle normalization and deterministic derivation.
+  - Prefer concrete evidence: paths, scripts, dependencies, config files, counts, and metadata.
 
 - `packages/core/src/analyzer/context/*`
   - Build focused context objects for prompts/classification.
+  - Do not drop high-value extractor signals unless there is a clear reason.
 
 - `packages/core/src/analyzer/ai/*`
   - Prompt composition and model-facing orchestration.
+  - Prompts must instruct the model to use only provided context and avoid generic claims.
+
+- `packages/core/src/analyzer/assemble/*`
+  - Validate final model output before returning API data.
+  - When adding output fields, update validators, UI types, and tests together.
 
 When changing contracts between layers, update all dependent types and tests in the same PR.
+
+## Output quality bar
+
+- Insights should be repository-specific and evidence-based.
+- Prefer concrete file paths, package scripts, dependencies, feature signals, and architecture signals.
+- Avoid output that could apply unchanged to many unrelated repositories.
+- Surface uncertainty clearly when README, package, tree, or metadata evidence is missing.
+- Do not invent runtime behavior from names alone.
+- Preserve cautious language around setup commands and inferred architecture.
+
+See `docs/analysis-quality.md` for the product standard.
 
 ## Local commands
 
@@ -57,6 +81,7 @@ Use root scripts:
 - Reuse existing utilities and patterns before introducing new helpers.
 - Do not add dependencies unless essential.
 - Do not silently change API/output shapes without updating callers.
+- Keep documentation in sync when changing pipeline boundaries, environment requirements, or output shape.
 
 ## Testing and verification
 
