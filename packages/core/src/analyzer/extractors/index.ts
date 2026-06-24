@@ -1,4 +1,5 @@
 export * from './metadata/extractMetadataInfo'
+export * from './file-summary'
 export * from './package-json/extractPackageJsonInfo'
 export * from './readme/extractReadmeInfo'
 export * from './tree/extractTreeSignal'

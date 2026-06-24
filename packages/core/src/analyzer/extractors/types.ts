@@ -82,6 +82,76 @@ interface MetadataInfo {
   openIssues: number | null
 }
 
+// ─── File Summary ────────────────────────────────────────────────────────────
+
+type FileLanguage = 'typescript' | 'tsx' | 'javascript' | 'jsx' | 'unknown'
+
+interface FileImportSummary {
+  source: string
+  defaultImport: string | null
+  namespaceImport: string | null
+  namedImports: string[]
+  isTypeOnly: boolean
+}
+
+type FileExportKind =
+  | 'function'
+  | 'class'
+  | 'interface'
+  | 'type'
+  | 'enum'
+  | 'variable'
+  | 're-export'
+  | 'default'
+
+interface FileExportSummary {
+  name: string
+  kind: FileExportKind
+  source: string | null
+}
+
+type FileDeclarationKind =
+  | 'function'
+  | 'class'
+  | 'interface'
+  | 'type'
+  | 'enum'
+  | 'variable'
+
+interface FileDeclarationSummary {
+  name: string
+  kind: FileDeclarationKind
+  exported: boolean
+}
+
+interface FileFunctionSummary extends FileDeclarationSummary {
+  kind: 'function'
+  async: boolean
+  parameters: string[]
+  returnType: string | null
+}
+
+interface FileSummaryMetrics {
+  lines: number
+  imports: number
+  exports: number
+  functions: number
+  classes: number
+  interfaces: number
+  types: number
+  enums: number
+}
+
+interface FileSummary {
+  path: string
+  language: FileLanguage
+  imports: FileImportSummary[]
+  exports: FileExportSummary[]
+  declarations: FileDeclarationSummary[]
+  functions: FileFunctionSummary[]
+  metrics: FileSummaryMetrics
+}
+
 // ─── Detection ───────────────────────────────────────────────────────────────
 
 interface FrameworkSignature {
@@ -110,6 +180,15 @@ export type {
   PackageInfo,
   FrameworkSignature,
   MetadataInfo,
+  FileLanguage,
+  FileImportSummary,
+  FileExportKind,
+  FileExportSummary,
+  FileDeclarationKind,
+  FileDeclarationSummary,
+  FileFunctionSummary,
+  FileSummaryMetrics,
+  FileSummary,
   RawMetadata,
   RawPackageJson,
   RawRepoTree,
