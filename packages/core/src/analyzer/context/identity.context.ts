@@ -14,5 +14,7 @@ export function createIdentityContext(
     name,
     description,
     repoType: classification.type,
+    topics: metadata.topics,
+    stars: metadata.stars,
   }
 }

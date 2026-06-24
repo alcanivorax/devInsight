@@ -10,6 +10,32 @@ interface TreeSignals {
   hasTests: boolean
 }
 
+interface ImportantFileSignal {
+  path: string
+  reason: string
+}
+
+interface DirectoryRoleSignal {
+  path: string
+  role: string
+}
+
+interface RepositoryMap {
+  topLevelDirectories: string[]
+  topLevelFiles: string[]
+  importantFiles: ImportantFileSignal[]
+  directoryRoles: DirectoryRoleSignal[]
+  architecturalSignals: string[]
+  counts: {
+    files: number
+    directories: number
+    testFiles: number
+    configFiles: number
+    apiRoutes: number
+    documentationFiles: number
+  }
+}
+
 type ConfidenceLevel = 'explicit' | 'inferred' | 'unknown'
 
 type EntryPointValue = { value: string | null; confidence: ConfidenceLevel }
@@ -172,6 +198,9 @@ interface DetectionPatterns {
 export type {
   ConfidenceLevel,
   TreeSignals,
+  ImportantFileSignal,
+  DirectoryRoleSignal,
+  RepositoryMap,
   TechHints,
   EntryPointValue,
   DetectionPatterns,

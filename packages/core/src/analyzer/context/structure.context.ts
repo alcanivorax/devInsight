@@ -1,10 +1,12 @@
 import type { TreeSignals } from '../extractors/types'
+import type { RepositoryMap } from '../extractors/types'
 import type { StructuralEntryPoint } from '../resolve/resolveStructuralEntryPoints'
 import type { StructureContext } from './types'
 
 export function createStructureContext(
   tree: TreeSignals,
-  entryPoints: StructuralEntryPoint[]
+  entryPoints: StructuralEntryPoint[],
+  repositoryMap?: RepositoryMap
 ): StructureContext {
   const overview: string[] = []
 
@@ -22,5 +24,11 @@ export function createStructureContext(
   return {
     overview,
     entryPoints: entryPoints.length > 0 ? entryPoints : undefined,
+    topLevelDirectories: repositoryMap?.topLevelDirectories,
+    topLevelFiles: repositoryMap?.topLevelFiles,
+    importantFiles: repositoryMap?.importantFiles,
+    directoryRoles: repositoryMap?.directoryRoles,
+    architecturalSignals: repositoryMap?.architecturalSignals,
+    counts: repositoryMap?.counts,
   }
 }

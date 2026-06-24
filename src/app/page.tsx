@@ -4,15 +4,30 @@ import type { FormEvent, ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 
 interface RepoAnalysis {
-  identity: { summary: string }
-  tech: { stack: string }
+  identity: {
+    summary: string
+    purpose?: string | null
+    audience?: string | null
+  }
+  tech: {
+    stack: string
+    notableLibraries?: string[]
+  }
   structure: {
     overview: string[]
     entryPoints?: string[] | null
+    importantFiles?: string[]
+    architecture?: string[]
   }
   setup: {
     installation: string | null
     runCommand?: string | null
+    nextSteps?: string[]
+  }
+  onboarding?: {
+    startHere: string[]
+    keySignals: string[]
+    gaps: string[]
   }
 }
 
@@ -22,39 +37,11 @@ const EXAMPLE_REPOS = [
   'https://github.com/fastify/fastify',
 ]
 
-const DEMO_ANALYSIS: RepoAnalysis = {
-  identity: {
-    summary:
-      'DevInsight appears to be a repository intelligence tool that turns GitHub project signals into concise engineering summaries for faster evaluation.',
-  },
-  tech: {
-    stack:
-      'The repository is primarily TypeScript, built as a Next.js application with a pnpm workspace. It uses Octokit for GitHub data, Zod for validation, Prisma for database access, and OpenRouter for model calls.',
-  },
-  structure: {
-    overview: [
-      'The web application lives in src/ with API routes under src/app/api/.',
-      'Core repository analysis is isolated in packages/core/src/ with separate GitHub, extractor, context, prompt, and assembly layers.',
-      'Tests are present around deterministic extractors, which is the right place to protect analysis quality.',
-    ],
-    entryPoints: [
-      'src/app/page.tsx',
-      'src/app/api/analyze/route.ts',
-      'packages/core/src/analyzer/index.ts',
-    ],
-  },
-  setup: {
-    installation: 'pnpm install',
-    runCommand: 'pnpm dev',
-  },
-}
-
 export default function HomePage() {
   const [url, setUrl] = useState('')
   const [data, setData] = useState<RepoAnalysis | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [isDemoResult, setIsDemoResult] = useState(false)
 
   const repoLabel = useMemo(() => getRepoLabel(url), [url])
 
@@ -67,7 +54,6 @@ export default function HomePage() {
     setLoading(true)
     setError(null)
     setData(null)
-    setIsDemoResult(false)
 
     try {
       const res = await fetch(`/api/analyze?repo=${encodeURIComponent(url)}`)
@@ -94,146 +80,90 @@ export default function HomePage() {
     if (!loading) void analyzeRepo()
   }
 
-  function showDemoAnalysis() {
-    setUrl('https://github.com/alcanivorax/devInsight')
-    setData(DEMO_ANALYSIS)
-    setError(null)
-    setLoading(false)
-    setIsDemoResult(true)
-  }
-
   return (
-    <main className="min-h-screen bg-[#f6f4ef] text-[#151515]">
-      <section className="border-b border-[#ded8cc] bg-[#101211] text-white">
-        <div className="mx-auto grid min-h-[540px] max-w-7xl gap-10 px-5 py-6 sm:px-8 lg:grid-cols-[1fr_440px] lg:px-10">
-          <div className="flex flex-col justify-between gap-10">
-            <header className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="grid h-9 w-9 place-items-center rounded-md bg-[#d6ff64] font-mono text-sm font-black text-[#101211]">
-                  DI
-                </div>
-                <span className="text-sm font-semibold tracking-wide">
-                  DevInsight
-                </span>
-              </div>
-              <div className="hidden items-center gap-2 text-xs text-white/55 sm:flex">
-                <span className="h-2 w-2 rounded-full bg-[#d6ff64]" />
-                GitHub + deterministic extractors + AI synthesis
-              </div>
-            </header>
-
-            <div className="max-w-3xl">
-              <p className="mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-[#d6ff64]">
-                Repository intelligence for fast technical judgment
+    <main className="min-h-screen bg-[#f4f1ea] text-[#111111]">
+      <div className="mx-auto grid min-h-screen max-w-6xl grid-rows-[auto_1fr] px-5 py-5 sm:px-8 lg:px-10">
+        <header className="border-b-2 border-[#111111] pb-5">
+          <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-end">
+            <div>
+              <p className="font-mono text-xs uppercase text-[#5f5b51]">
+                AI repository analyzer / MVP
               </p>
-              <h1 className="max-w-4xl text-5xl font-semibold leading-[0.98] tracking-tight sm:text-6xl lg:text-7xl">
-                Understand a codebase before you open the first file.
+              <h1 className="mt-3 text-5xl font-semibold leading-none tracking-tight sm:text-7xl">
+                devInsight
               </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-white/68">
-                Paste a GitHub repo and get a cautious brief on what it is, what
-                it runs on, how it is structured, and where to start.
-              </p>
             </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              <Metric
-                label="Signals"
-                value="4"
-                detail="identity, tech, structure, setup"
-              />
-              <Metric
-                label="Pipeline"
-                value="5"
-                detail="fetch, extract, merge, classify, prompt"
-              />
-              <Metric
-                label="Output"
-                value="JSON"
-                detail="typed summaries for UI and APIs"
-              />
-            </div>
+            <p className="max-w-sm text-sm leading-6 text-[#4f4b42] md:text-right">
+              Structured, cautious summaries of GitHub repositories: identity,
+              stack, structure, and setup.
+            </p>
           </div>
+        </header>
 
-          <div className="flex items-end">
-            <div className="w-full rounded-lg border border-white/12 bg-white/[0.06] p-5 shadow-2xl shadow-black/40 backdrop-blur">
-              <div className="mb-5 flex items-center justify-between">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.18em] text-white/40">
-                    Live analyzer
-                  </p>
-                  <h2 className="mt-1 text-xl font-semibold">
-                    Repository brief
-                  </h2>
-                </div>
-                <span className="rounded-full bg-[#d6ff64] px-3 py-1 text-xs font-bold text-[#101211]">
-                  MVP
+        <div className="grid gap-8 py-8 lg:grid-cols-[360px_1fr]">
+          <aside className="space-y-5">
+            <form
+              onSubmit={onSubmit}
+              className="border-2 border-[#111111] bg-[#fdfbf6] p-4 shadow-[8px_8px_0_#111111]"
+            >
+              <label className="block">
+                <span className="mb-3 block font-mono text-xs uppercase text-[#5f5b51]">
+                  GitHub repository
                 </span>
-              </div>
+                <input
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  disabled={loading}
+                  placeholder="https://github.com/vercel/next.js"
+                  className="w-full border-2 border-[#111111] bg-[#f4f1ea] px-3 py-3 font-mono text-sm outline-none placeholder:text-[#8a8578] focus:bg-white disabled:opacity-50"
+                />
+              </label>
 
-              <form onSubmit={onSubmit} className="space-y-4">
-                <label className="block">
-                  <span className="mb-2 block text-xs font-medium text-white/55">
-                    GitHub repository URL
-                  </span>
-                  <input
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    disabled={loading}
-                    placeholder="https://github.com/vercel/next.js"
-                    className="w-full rounded-md border border-white/12 bg-[#070807] px-4 py-3 font-mono text-sm text-white outline-none transition placeholder:text-white/26 focus:border-[#d6ff64] disabled:opacity-50"
-                  />
-                </label>
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-4 w-full border-2 border-[#111111] bg-[#111111] px-4 py-3 text-sm font-semibold uppercase text-[#fdfbf6] transition hover:bg-[#d7ff5f] hover:text-[#111111] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading ? 'Analyzing' : 'Analyze'}
+              </button>
+            </form>
 
-                <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="rounded-md bg-[#d6ff64] px-5 py-3 text-sm font-bold text-[#101211] transition hover:bg-[#c4f34b] disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {loading ? 'Analyzing' : 'Analyze repository'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={showDemoAnalysis}
-                    disabled={loading}
-                    className="rounded-md border border-white/14 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/30 hover:bg-white/8 disabled:opacity-60"
-                  >
-                    View demo
-                  </button>
-                </div>
-              </form>
-
-              <div className="mt-5 flex flex-wrap gap-2">
+            <div className="border-2 border-[#111111] bg-[#e8e3d8] p-4">
+              <p className="mb-3 font-mono text-xs uppercase text-[#5f5b51]">
+                Try one
+              </p>
+              <div className="space-y-2">
                 {EXAMPLE_REPOS.map((repo) => (
                   <button
                     key={repo}
                     type="button"
                     onClick={() => setUrl(repo)}
-                    className="rounded-full border border-white/12 px-3 py-1.5 font-mono text-xs text-white/62 transition hover:border-[#d6ff64]/60 hover:text-white"
+                    className="block w-full border border-[#111111] bg-[#fdfbf6] px-3 py-2 text-left font-mono text-xs transition hover:bg-[#d7ff5f]"
                   >
                     {getRepoLabel(repo)}
                   </button>
                 ))}
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-10">
-        {error && <ErrorState message={error} onDemoClick={showDemoAnalysis} />}
-        {loading && <LoadingState repoLabel={repoLabel} />}
-        {!loading && data && (
-          <Results
-            analysis={data}
-            repoLabel={repoLabel}
-            isDemo={isDemoResult}
-          />
-        )}
-        {!loading && !data && !error && (
-          <EmptyState onDemoClick={showDemoAnalysis} />
-        )}
-      </section>
+            <div className="grid grid-cols-2 border-2 border-[#111111] font-mono text-xs uppercase">
+              <Stat label="Input" value="GitHub" />
+              <Stat label="Output" value="JSON" />
+              <Stat label="Signals" value="4" />
+              <Stat label="Mode" value="Live" />
+            </div>
+          </aside>
+
+          <section>
+            {error && <ErrorState message={error} />}
+            {loading && <LoadingState repoLabel={repoLabel} />}
+            {!loading && data && (
+              <Results analysis={data} repoLabel={repoLabel} />
+            )}
+            {!loading && !data && !error && <EmptyState />}
+          </section>
+        </div>
+      </div>
     </main>
   )
 }
@@ -241,148 +171,141 @@ export default function HomePage() {
 function Results({
   analysis,
   repoLabel,
-  isDemo,
 }: {
   analysis: RepoAnalysis
   repoLabel: string
-  isDemo: boolean
 }) {
   const entryPoints = analysis.structure.entryPoints ?? []
-  const setupItems = [
-    { label: 'Install', value: analysis.setup.installation },
-    { label: 'Run', value: analysis.setup.runCommand },
-  ].filter((item): item is { label: string; value: string } =>
-    Boolean(item.value)
-  )
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col gap-3 border-b border-[#ded8cc] pb-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#737064]">
-            {isDemo ? 'Demo insight' : 'Generated insight'}
-          </p>
-          <h2 className="mt-1 text-3xl font-semibold tracking-tight">
-            {repoLabel || 'Repository analysis'}
-          </h2>
-        </div>
-        <p className="max-w-xl text-sm leading-6 text-[#656258]">
-          Cautious by design: DevInsight separates fetched GitHub data,
-          deterministic extraction, and model-written presentation.
+      <div className="border-2 border-[#111111] bg-[#111111] p-5 text-[#fdfbf6]">
+        <p className="font-mono text-xs uppercase text-[#d7ff5f]">
+          Generated analysis
         </p>
+        <h2 className="mt-2 text-3xl font-semibold tracking-tight">
+          {repoLabel}
+        </h2>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-        <Panel title="Executive Read" eyebrow="What it is">
-          <p className="text-lg leading-8 text-[#282721]">
-            {analysis.identity.summary}
-          </p>
+      <div className="grid gap-5 xl:grid-cols-2">
+        <Panel number="01" title="Overview">
+          <p className="text-lg leading-8">{analysis.identity.summary}</p>
+          <DefinitionList
+            items={[
+              { label: 'Purpose', value: analysis.identity.purpose },
+              { label: 'Audience', value: analysis.identity.audience },
+            ]}
+          />
         </Panel>
 
-        <Panel title="Signal Map" eyebrow="Confidence cues">
-          <div className="space-y-4">
-            <SignalMeter label="Identity" value={92} />
-            <SignalMeter label="Tech stack" value={86} />
-            <SignalMeter label="Structure" value={78} />
-            <SignalMeter
-              label="Setup"
-              value={analysis.setup.runCommand ? 72 : 46}
-            />
-          </div>
+        <Panel number="02" title="Tech Stack">
+          <p className="leading-7">{analysis.tech.stack}</p>
+          <InlineList
+            title="Notable libraries"
+            items={analysis.tech.notableLibraries}
+          />
         </Panel>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-3">
-        <Panel title="Tech Stack" eyebrow="Detected">
-          <p className="leading-7 text-[#3d3b33]">{analysis.tech.stack}</p>
-        </Panel>
-
-        <Panel title="Project Shape" eyebrow="Structure">
-          <div className="space-y-3">
-            {analysis.structure.overview.map((item) => (
-              <div
-                key={item}
-                className="flex gap-3 text-sm leading-6 text-[#3d3b33]"
-              >
-                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#151515]" />
-                <span>{item}</span>
-              </div>
-            ))}
-          </div>
-        </Panel>
-
-        <Panel title="Start Here" eyebrow="Setup">
-          {setupItems.length > 0 ? (
-            <div className="space-y-3">
-              {setupItems.map((item) => (
-                <div key={item.label}>
-                  <p className="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#777367]">
-                    {item.label}
-                  </p>
-                  <pre className="overflow-x-auto rounded-md bg-[#151515] p-3 font-mono text-xs leading-6 text-[#d6ff64]">
-                    {item.value}
-                  </pre>
-                </div>
-              ))}
+      <Panel number="03" title="Project Structure">
+        <div className="space-y-3">
+          {analysis.structure.overview.map((item) => (
+            <div
+              key={item}
+              className="grid grid-cols-[24px_1fr] gap-3 border-t border-[#111111] pt-3 text-sm leading-6 first:border-t-0 first:pt-0"
+            >
+              <span className="font-mono text-xs">--</span>
+              <span>{item}</span>
             </div>
-          ) : (
-            <p className="leading-7 text-[#656258]">
-              No setup commands were confidently identified from the available
-              repository signals.
-            </p>
-          )}
-        </Panel>
-      </div>
+          ))}
+        </div>
 
-      {entryPoints.length > 0 && (
-        <Panel title="Likely Entry Points" eyebrow="Where to inspect first">
-          <div className="flex flex-wrap gap-2">
+        {entryPoints.length > 0 && (
+          <div className="mt-5 flex flex-wrap gap-2 border-t border-[#111111] pt-4">
             {entryPoints.map((entryPoint) => (
               <code
                 key={entryPoint}
-                className="rounded-md border border-[#d8d1c3] bg-white px-3 py-2 font-mono text-xs text-[#282721]"
+                className="border border-[#111111] bg-[#f4f1ea] px-3 py-2 font-mono text-xs"
               >
                 {entryPoint}
               </code>
             ))}
           </div>
+        )}
+
+        <InsightList
+          title="Architecture signals"
+          items={analysis.structure.architecture}
+        />
+        <InsightList
+          title="Important files"
+          items={analysis.structure.importantFiles}
+        />
+      </Panel>
+
+      <Panel number="04" title="Setup">
+        <div className="grid gap-4 md:grid-cols-2">
+          <CommandBlock
+            label="Installation"
+            value={analysis.setup.installation}
+            fallback="No installation command found."
+          />
+          <CommandBlock
+            label="Run command"
+            value={analysis.setup.runCommand}
+            fallback="No run command found."
+          />
+        </div>
+        <InsightList
+          title="Suggested next steps"
+          items={analysis.setup.nextSteps}
+        />
+      </Panel>
+
+      {analysis.onboarding && (
+        <Panel number="05" title="Developer Onboarding">
+          <div className="grid gap-5 lg:grid-cols-3">
+            <InsightList
+              title="Start here"
+              items={analysis.onboarding.startHere}
+              compact
+            />
+            <InsightList
+              title="Key signals"
+              items={analysis.onboarding.keySignals}
+              compact
+            />
+            <InsightList
+              title="Gaps"
+              items={analysis.onboarding.gaps}
+              compact
+            />
+          </div>
         </Panel>
       )}
 
-      <div className="rounded-lg border border-[#d8d1c3] bg-[#ebe6da] p-4 text-sm leading-6 text-[#5f5b50]">
-        TODO: Persist saved analyses, add comparison views across repositories,
-        and show provenance for each insight so production users can trace every
-        claim back to README, package, tree, or metadata signals.
+      <div className="border-2 border-[#111111] bg-[#e8e3d8] p-4 font-mono text-xs uppercase leading-5 text-[#4f4b42]">
+        TODO: Add saved analyses, source provenance for each claim, and a
+        comparison mode for multiple repositories.
       </div>
     </div>
   )
 }
 
-function EmptyState({ onDemoClick }: { onDemoClick: () => void }) {
+function EmptyState() {
   return (
-    <div className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
-      <Panel title="Ready for a first repo" eyebrow="No analysis yet">
-        <p className="mb-5 leading-7 text-[#555146]">
-          The strongest demo path is a recognizable open-source repo or the
-          built-in DevInsight sample. Results appear as an investor-friendly
-          technical brief instead of raw API output.
+    <div className="grid min-h-[420px] place-items-center border-2 border-[#111111] bg-[#fdfbf6] p-8 text-center">
+      <div className="max-w-md">
+        <p className="font-mono text-xs uppercase text-[#5f5b51]">
+          Waiting for input
         </p>
-        <button
-          type="button"
-          onClick={onDemoClick}
-          className="rounded-md bg-[#151515] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#2a2925]"
-        >
-          Load sample insight
-        </button>
-      </Panel>
-
-      <div className="grid gap-4 sm:grid-cols-3">
-        <PreviewCard title="Identity" copy="Plain-English product summary." />
-        <PreviewCard
-          title="Stack"
-          copy="Detected runtime, framework, and tooling."
-        />
-        <PreviewCard title="Setup" copy="Commands a reviewer can try first." />
+        <h2 className="mt-3 text-4xl font-semibold tracking-tight">
+          Paste a repository URL.
+        </h2>
+        <p className="mt-4 text-sm leading-6 text-[#5b564c]">
+          Results will appear here as a structured technical brief.
+        </p>
       </div>
     </div>
   )
@@ -390,26 +313,24 @@ function EmptyState({ onDemoClick }: { onDemoClick: () => void }) {
 
 function LoadingState({ repoLabel }: { repoLabel: string }) {
   return (
-    <div className="rounded-lg border border-[#d8d1c3] bg-white p-6 shadow-sm">
-      <div className="mb-5 flex items-center justify-between gap-4">
+    <div className="border-2 border-[#111111] bg-[#fdfbf6] p-5">
+      <div className="flex items-start justify-between gap-4 border-b-2 border-[#111111] pb-5">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#777367]">
+          <p className="font-mono text-xs uppercase text-[#5f5b51]">
             Analyzing
           </p>
-          <h2 className="mt-1 text-2xl font-semibold">{repoLabel}</h2>
+          <h2 className="mt-2 text-3xl font-semibold tracking-tight">
+            {repoLabel}
+          </h2>
         </div>
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#ded8cc] border-t-[#151515]" />
+        <span className="h-5 w-5 animate-pulse bg-[#111111]" />
       </div>
-      <div className="grid gap-3 sm:grid-cols-4">
-        {[
-          'Fetching GitHub data',
-          'Extracting signals',
-          'Building prompts',
-          'Composing brief',
-        ].map((step) => (
-          <div key={step} className="rounded-md bg-[#f6f4ef] p-4">
-            <div className="mb-3 h-1.5 rounded-full bg-[#d6ff64]" />
-            <p className="text-sm font-medium text-[#3d3b33]">{step}</p>
+
+      <div className="mt-5 grid gap-3 md:grid-cols-4">
+        {['Fetch', 'Extract', 'Classify', 'Summarize'].map((step, index) => (
+          <div key={step} className="border border-[#111111] p-3">
+            <p className="font-mono text-xs text-[#5f5b51]">0{index + 1}</p>
+            <p className="mt-6 text-sm font-semibold uppercase">{step}</p>
           </div>
         ))}
       </div>
@@ -417,114 +338,153 @@ function LoadingState({ repoLabel }: { repoLabel: string }) {
   )
 }
 
-function ErrorState({
-  message,
-  onDemoClick,
-}: {
-  message: string
-  onDemoClick: () => void
-}) {
+function ErrorState({ message }: { message: string }) {
   return (
-    <div className="rounded-lg border border-[#e3b4a8] bg-[#fff7f4] p-6">
-      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9a4a37]">
-        Analysis paused
+    <div className="border-2 border-[#111111] bg-[#ffe9df] p-5 shadow-[8px_8px_0_#111111]">
+      <p className="font-mono text-xs uppercase text-[#8a2c1c]">
+        Analysis failed
       </p>
-      <h2 className="mt-1 text-2xl font-semibold text-[#32150f]">{message}</h2>
-      <p className="mt-3 max-w-2xl text-sm leading-6 text-[#76584f]">
-        Live analysis needs a reachable GitHub repository and configured model
-        credentials. The demo insight keeps the product story visible when a
-        service is unavailable.
+      <h2 className="mt-2 text-3xl font-semibold tracking-tight">{message}</h2>
+      <p className="mt-4 max-w-2xl text-sm leading-6 text-[#6b4037]">
+        Check that the repository exists and that the required GitHub/model
+        environment variables are configured.
       </p>
-      <button
-        type="button"
-        onClick={onDemoClick}
-        className="mt-5 rounded-md bg-[#32150f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#4c2419]"
-      >
-        Show demo insight
-      </button>
-    </div>
-  )
-}
-
-function Metric({
-  label,
-  value,
-  detail,
-}: {
-  label: string
-  value: string
-  detail: string
-}) {
-  return (
-    <div className="rounded-lg border border-white/10 bg-white/[0.05] p-4">
-      <p className="text-xs uppercase tracking-[0.16em] text-white/42">
-        {label}
-      </p>
-      <p className="mt-3 text-2xl font-semibold">{value}</p>
-      <p className="mt-1 text-xs leading-5 text-white/52">{detail}</p>
     </div>
   )
 }
 
 function Panel({
+  number,
   title,
-  eyebrow,
   children,
 }: {
+  number: string
   title: string
-  eyebrow: string
   children: ReactNode
 }) {
   return (
-    <section className="rounded-lg border border-[#d8d1c3] bg-white p-5 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#777367]">
-        {eyebrow}
-      </p>
-      <h3 className="mt-1 mb-4 text-xl font-semibold tracking-tight">
-        {title}
-      </h3>
+    <section className="border-2 border-[#111111] bg-[#fdfbf6] p-5">
+      <div className="mb-5 flex items-start justify-between gap-5 border-b border-[#111111] pb-3">
+        <h3 className="text-2xl font-semibold tracking-tight">{title}</h3>
+        <span className="font-mono text-xs text-[#5f5b51]">{number}</span>
+      </div>
       {children}
     </section>
   )
 }
 
-function PreviewCard({ title, copy }: { title: string; copy: string }) {
+function CommandBlock({
+  label,
+  value,
+  fallback,
+}: {
+  label: string
+  value?: string | null
+  fallback: string
+}) {
   return (
-    <div className="rounded-lg border border-[#d8d1c3] bg-white p-5 shadow-sm">
-      <div className="mb-8 h-16 rounded-md bg-[#151515] p-3">
-        <div className="h-2 w-1/2 rounded-full bg-[#d6ff64]" />
-        <div className="mt-3 h-2 w-3/4 rounded-full bg-white/28" />
-        <div className="mt-2 h-2 w-2/5 rounded-full bg-white/18" />
-      </div>
-      <h3 className="text-lg font-semibold">{title}</h3>
-      <p className="mt-2 text-sm leading-6 text-[#5c584d]">{copy}</p>
+    <div>
+      <p className="mb-2 font-mono text-xs uppercase text-[#5f5b51]">{label}</p>
+      {value ? (
+        <pre className="overflow-x-auto border-2 border-[#111111] bg-[#111111] p-4 font-mono text-sm leading-6 text-[#d7ff5f]">
+          {value}
+        </pre>
+      ) : (
+        <p className="border-2 border-[#111111] bg-[#f4f1ea] p-4 font-mono text-sm">
+          {fallback}
+        </p>
+      )}
     </div>
   )
 }
 
-function SignalMeter({ label, value }: { label: string; value: number }) {
+function DefinitionList({
+  items,
+}: {
+  items: { label: string; value?: string | null }[]
+}) {
+  const visibleItems = items.filter((item) => item.value)
+
+  if (visibleItems.length === 0) return null
+
   return (
-    <div>
-      <div className="mb-2 flex items-center justify-between text-sm">
-        <span className="font-medium text-[#343229]">{label}</span>
-        <span className="font-mono text-xs text-[#777367]">{value}%</span>
+    <dl className="mt-5 grid gap-3 border-t border-[#111111] pt-4 sm:grid-cols-2">
+      {visibleItems.map((item) => (
+        <div key={item.label}>
+          <dt className="font-mono text-xs uppercase text-[#5f5b51]">
+            {item.label}
+          </dt>
+          <dd className="mt-1 text-sm leading-6">{item.value}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
+function InlineList({ title, items }: { title: string; items?: string[] }) {
+  if (!items || items.length === 0) return null
+
+  return (
+    <div className="mt-5 border-t border-[#111111] pt-4">
+      <p className="mb-3 font-mono text-xs uppercase text-[#5f5b51]">{title}</p>
+      <div className="flex flex-wrap gap-2">
+        {items.map((item) => (
+          <span
+            key={item}
+            className="border border-[#111111] bg-[#f4f1ea] px-2 py-1 font-mono text-xs"
+          >
+            {item}
+          </span>
+        ))}
       </div>
-      <div className="h-2 rounded-full bg-[#ebe6da]">
-        <div
-          className="h-2 rounded-full bg-[#151515]"
-          style={{ width: `${value}%` }}
-        />
+    </div>
+  )
+}
+
+function InsightList({
+  title,
+  items,
+  compact = false,
+}: {
+  title: string
+  items?: string[]
+  compact?: boolean
+}) {
+  if (!items || items.length === 0) return null
+
+  return (
+    <div className={compact ? '' : 'mt-5 border-t border-[#111111] pt-4'}>
+      <p className="mb-3 font-mono text-xs uppercase text-[#5f5b51]">{title}</p>
+      <div className="space-y-2">
+        {items.map((item) => (
+          <div
+            key={item}
+            className="grid grid-cols-[18px_1fr] gap-2 text-sm leading-6"
+          >
+            <span className="font-mono text-xs">+</span>
+            <span>{item}</span>
+          </div>
+        ))}
       </div>
+    </div>
+  )
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="border-[#111111] p-3 odd:border-r even:border-r-0 [&:nth-child(-n+2)]:border-b">
+      <p className="text-[#5f5b51]">{label}</p>
+      <p className="mt-2 text-lg font-semibold">{value}</p>
     </div>
   )
 }
 
 function getRepoLabel(repoUrl: string): string {
-  const fallback = repoUrl.trim() || 'Select a repository'
+  const fallback = repoUrl.trim() || 'No repository selected'
 
   try {
-    const url = new URL(repoUrl)
-    const [owner, repo] = url.pathname.split('/').filter(Boolean)
+    const parsedUrl = new URL(repoUrl)
+    const [owner, repo] = parsedUrl.pathname.split('/').filter(Boolean)
     return owner && repo ? `${owner}/${repo}` : fallback
   } catch {
     return fallback

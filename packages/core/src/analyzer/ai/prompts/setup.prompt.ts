@@ -13,6 +13,7 @@ Rules:
 - If installation instructions are missing, state that clearly.
 - If a run command is provided, present it as a possible way to run the project.
 - Do NOT guarantee that the steps will work.
+- Use package manager and scripts when present to suggest cautious next steps.
 - Output ONLY valid JSON.
 - Do NOT include explanations or extra text.
 
@@ -20,7 +21,8 @@ The JSON MUST match this schema exactly:
 
 {
   "installation": string | null,
-  "runCommand": string | null
+  "runCommand": string | null,
+  "nextSteps": string[]
 }
 
 Setup Context:

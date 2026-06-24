@@ -7,6 +7,7 @@ import {
   extractReadmeInfo,
   extractTreeSignal,
   extractTechHints,
+  extractRepositoryMap,
   mergeTechHintsWithPackageInfo,
   classifyRepoType,
   resolveStructuralEntryPoints,
@@ -14,10 +15,12 @@ import {
   createTechContext,
   createStructureContext,
   createSetupContext,
+  createOnboardingContext,
   buildIdentityPrompt,
   buildTechPrompt,
   buildStructurePrompt,
   buildSetupPrompt,
+  buildOnboardingPrompt,
   assembleRepoAnalysis,
   handleApiError,
   NotFoundError,
@@ -61,6 +64,7 @@ export async function GET(req: NextRequest) {
 
     const extractedTreeSignal = extractTreeSignal(tree)
     const extractedTechHints = extractTechHints(tree)
+    const repositoryMap = extractRepositoryMap(tree)
 
     // ─── Merge ───────────────────────────────────────────────────────────────
     const mergedTech = mergeTechHintsWithPackageInfo(
@@ -87,15 +91,22 @@ export async function GET(req: NextRequest) {
       extractedMetadata,
       classification
     )
-    const techContext = createTechContext(mergedTech)
+    const techContext = createTechContext(mergedTech, extractedPackageJson)
     const structureContext = createStructureContext(
       extractedTreeSignal,
-      resolvedEntryPoints
+      resolvedEntryPoints,
+      repositoryMap
     )
     const setupContext = createSetupContext(
       extractedReadme,
       extractedPackageJson
     )
+    const onboardingContext = createOnboardingContext({
+      identity: identityContext,
+      tech: techContext,
+      structure: structureContext,
+      setup: setupContext,
+    })
 
     // ─── Build prompts ────────────────────────────────────────────────────────
     const prompts = {
@@ -103,6 +114,7 @@ export async function GET(req: NextRequest) {
       tech: buildTechPrompt(techContext),
       structure: buildStructurePrompt(structureContext),
       setup: buildSetupPrompt(setupContext),
+      onboarding: buildOnboardingPrompt(onboardingContext),
     }
 
     // ─── Assemble & respond ───────────────────────────────────────────────────

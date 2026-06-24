@@ -12,14 +12,16 @@ Rules:
 - Do NOT guess missing technologies.
 - If a value is null, state that it is not explicitly specified.
 - Do NOT describe architecture or setup steps.
-- Keep the explanation brief and neutral.
+- Use dependencies and scripts to identify notable libraries only when present.
+- Keep the explanation brief, concrete, and neutral.
 - Output ONLY valid JSON.
 - Do NOT include explanations or extra text.
 
 The JSON MUST match this schema exactly:
 
 {
-  "stack": string
+  "stack": string,
+  "notableLibraries": string[]
 }
 
 Tech Context:
