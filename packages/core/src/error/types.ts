@@ -4,6 +4,7 @@ export const ERROR_CODES = {
   UNAUTHORIZED: 'UNAUTHORIZED',
   FORBIDDEN: 'FORBIDDEN',
   INTERNAL: 'INTERNAL_ERROR',
+  EXTERNAL_SERVICE: 'EXTERNAL_SERVICE_ERROR',
 } as const
 
 export interface ErrorResponse {

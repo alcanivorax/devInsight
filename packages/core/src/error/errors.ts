@@ -54,3 +54,12 @@ export class ForbiddenError extends AppError {
     super(403, message, 'FORBIDDEN')
   }
 }
+
+export class ExternalServiceError extends AppError {
+  constructor(message: string, statusCode = 502, details?: unknown) {
+    super(statusCode, message, 'EXTERNAL_SERVICE_ERROR', {
+      details,
+      exposeDetails: false,
+    })
+  }
+}

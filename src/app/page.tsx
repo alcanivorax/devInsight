@@ -60,7 +60,7 @@ export default function HomePage() {
       const json = await res.json()
 
       if (!res.ok || json.error) {
-        throw new Error(json.error ?? 'Analysis failed.')
+        throw new Error(json.error?.message ?? 'Analysis failed.')
       }
 
       setData(json.data)

@@ -5,6 +5,7 @@ export {
   NotFoundError,
   UnauthorizedError,
   ForbiddenError,
+  ExternalServiceError,
 } from './errors'
 
 export { handleApiError } from './error-handler'
