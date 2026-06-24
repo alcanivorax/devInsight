@@ -14,6 +14,8 @@ Rules:
 - "startHere" should list the first files or directories to inspect and why.
 - "keySignals" should explain the most important evidence about architecture or project shape.
 - "gaps" should list missing or uncertain information that limits confidence.
+- Prioritize files that reveal contracts, boundaries, data flow, or runtime setup.
+- Avoid generic advice such as "read the README" unless paired with a concrete reason from context.
 - Keep each item short and actionable.
 - Output ONLY valid JSON.
 - Do NOT include explanations or extra text.

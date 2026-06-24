@@ -12,6 +12,20 @@ describe('extractPackageJsonInfo (smoke test)', () => {
     expect(result.dependencies).toContain('next')
     expect(result.devDependencies).toContain('typescript')
     expect(result.scripts.dev).toBe('next dev')
+    expect(result.dependencyInsights).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'next',
+          category: 'framework',
+          scope: 'runtime',
+        }),
+        expect.objectContaining({
+          name: 'typescript',
+          category: 'tooling',
+          scope: 'development',
+        }),
+      ])
+    )
   })
 
   it('normalizes string bin entries', () => {

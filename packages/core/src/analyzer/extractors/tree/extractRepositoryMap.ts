@@ -1,5 +1,7 @@
 import type {
+  ComplexityIndicator,
   DirectoryRoleSignal,
+  FeatureSignal,
   ImportantFileSignal,
   RawRepoTree,
   RepositoryMap,
@@ -97,6 +99,7 @@ export function extractRepositoryMap(tree: RawRepoTree): RepositoryMap {
   const importantFiles: ImportantFileSignal[] = []
   const directoryRoles: DirectoryRoleSignal[] = []
   const architecturalSignals = new Set<string>()
+  const featureSignals: FeatureSignal[] = []
 
   let files = 0
   let directories = 0
@@ -142,7 +145,9 @@ export function extractRepositoryMap(tree: RawRepoTree): RepositoryMap {
     }
   }
 
-  addArchitecturalSignals(tree, architecturalSignals)
+  const normalizedPaths = new Set(tree.map((item) => item.path.toLowerCase()))
+  addArchitecturalSignals(normalizedPaths, architecturalSignals)
+  addFeatureSignals(normalizedPaths, featureSignals)
 
   return {
     topLevelDirectories: [...topLevelDirectories].sort(),
@@ -150,6 +155,15 @@ export function extractRepositoryMap(tree: RawRepoTree): RepositoryMap {
     importantFiles: importantFiles.slice(0, 16),
     directoryRoles: directoryRoles.slice(0, 12),
     architecturalSignals: [...architecturalSignals].sort(),
+    featureSignals: featureSignals.slice(0, 12),
+    complexityIndicators: deriveComplexityIndicators({
+      files,
+      directories,
+      testFiles,
+      configFiles,
+      apiRoutes,
+      documentationFiles,
+    }),
     counts: {
       files,
       directories,
@@ -162,11 +176,9 @@ export function extractRepositoryMap(tree: RawRepoTree): RepositoryMap {
 }
 
 function addArchitecturalSignals(
-  tree: RawRepoTree,
+  paths: Set<string>,
   architecturalSignals: Set<string>
 ): void {
-  const paths = new Set(tree.map((item) => item.path.toLowerCase()))
-
   if (hasPathPrefix(paths, 'src/app/api/')) {
     architecturalSignals.add('Next.js API route layer is present.')
   }
@@ -203,6 +215,113 @@ function addArchitecturalSignals(
       'GitHub Actions CI/workflow configuration is present.'
     )
   }
+}
+
+function addFeatureSignals(
+  paths: Set<string>,
+  featureSignals: FeatureSignal[]
+): void {
+  addFeatureSignal(featureSignals, {
+    name: 'HTTP API surface',
+    confidence: 'explicit',
+    evidence: pathsMatching(paths, /^src\/app\/api\/.+\/route\.[jt]s$/).slice(
+      0,
+      6
+    ),
+  })
+
+  addFeatureSignal(featureSignals, {
+    name: 'Authentication',
+    confidence: 'explicit',
+    evidence: pathsMatching(paths, /(^|\/)(auth|auth-client)\.[jt]s$/).slice(
+      0,
+      6
+    ),
+  })
+
+  addFeatureSignal(featureSignals, {
+    name: 'Database layer',
+    confidence: 'explicit',
+    evidence: pathsMatching(paths, /(^prisma\/schema\.prisma$|prisma\.[jt]s$)/),
+  })
+
+  addFeatureSignal(featureSignals, {
+    name: 'Documentation system',
+    confidence: 'explicit',
+    evidence: pathsMatching(paths, /(^docs\/|readme\.md$)/).slice(0, 6),
+  })
+
+  addFeatureSignal(featureSignals, {
+    name: 'Automated tests',
+    confidence: 'explicit',
+    evidence: pathsMatching(paths, /\.(test|spec)\.[jt]sx?$/).slice(0, 6),
+  })
+
+  addFeatureSignal(featureSignals, {
+    name: 'CI automation',
+    confidence: 'explicit',
+    evidence: pathsMatching(paths, /^\.github\/workflows\/.+\.ya?ml$/),
+  })
+}
+
+function addFeatureSignal(
+  signals: FeatureSignal[],
+  signal: FeatureSignal
+): void {
+  if (signal.evidence.length === 0) return
+  signals.push(signal)
+}
+
+function pathsMatching(paths: Set<string>, pattern: RegExp): string[] {
+  return [...paths].filter((path) => pattern.test(path)).sort()
+}
+
+function deriveComplexityIndicators(
+  counts: RepositoryMap['counts']
+): ComplexityIndicator[] {
+  const indicators: ComplexityIndicator[] = []
+
+  if (counts.files >= 250) {
+    indicators.push({
+      label: 'Large codebase',
+      detail: `${counts.files} files detected; onboarding should start from mapped entry points and high-signal directories.`,
+    })
+  } else if (counts.files >= 80) {
+    indicators.push({
+      label: 'Moderate codebase',
+      detail: `${counts.files} files detected; repository structure is large enough to benefit from a guided review path.`,
+    })
+  } else {
+    indicators.push({
+      label: 'Compact codebase',
+      detail: `${counts.files} files detected; a first-pass review can likely cover the main modules quickly.`,
+    })
+  }
+
+  if (counts.apiRoutes > 0) {
+    indicators.push({
+      label: 'API surface area',
+      detail: `${counts.apiRoutes} Next.js API route file${
+        counts.apiRoutes === 1 ? '' : 's'
+      } detected.`,
+    })
+  }
+
+  if (counts.testFiles === 0) {
+    indicators.push({
+      label: 'No test files detected',
+      detail: 'The repository tree did not expose obvious test or spec files.',
+    })
+  } else {
+    indicators.push({
+      label: 'Test coverage signal',
+      detail: `${counts.testFiles} test-related file${
+        counts.testFiles === 1 ? '' : 's'
+      } detected.`,
+    })
+  }
+
+  return indicators
 }
 
 function hasPathPrefix(paths: Set<string>, prefix: string): boolean {

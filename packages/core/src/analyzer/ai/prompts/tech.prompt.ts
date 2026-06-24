@@ -12,8 +12,10 @@ Rules:
 - Do NOT guess missing technologies.
 - If a value is null, state that it is not explicitly specified.
 - Do NOT describe architecture or setup steps.
-- Use dependencies and scripts to identify notable libraries only when present.
+- Use dependencyInsights first when explaining important libraries.
+- Mention package scripts only when they clarify developer workflow.
 - Keep the explanation brief, concrete, and neutral.
+- Avoid listing every dependency; explain what the important dependencies imply.
 - Output ONLY valid JSON.
 - Do NOT include explanations or extra text.
 
@@ -21,7 +23,8 @@ The JSON MUST match this schema exactly:
 
 {
   "stack": string,
-  "notableLibraries": string[]
+  "notableLibraries": string[],
+  "dependencyInsights": string[]
 }
 
 Tech Context:

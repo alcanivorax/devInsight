@@ -65,6 +65,29 @@ describe('extractRepositoryMap', () => {
         'Repository uses a packages-based workspace layout.',
       ])
     )
+    expect(result.featureSignals).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'HTTP API surface',
+          evidence: ['src/app/api/analyze/route.ts'],
+        }),
+        expect.objectContaining({
+          name: 'Authentication',
+          evidence: ['src/lib/auth.ts'],
+        }),
+        expect.objectContaining({
+          name: 'Database layer',
+          evidence: ['prisma/schema.prisma', 'src/lib/prisma.ts'],
+        }),
+      ])
+    )
+    expect(result.complexityIndicators).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ label: 'Compact codebase' }),
+        expect.objectContaining({ label: 'API surface area' }),
+        expect.objectContaining({ label: 'Test coverage signal' }),
+      ])
+    )
     expect(result.counts).toMatchObject({
       files: 12,
       directories: 8,

@@ -5,6 +5,8 @@ export function validateStructureOutput(raw: unknown): {
   entryPoints?: string[]
   importantFiles?: string[]
   architecture?: string[]
+  featureSignals?: string[]
+  complexity?: string[]
 } {
   if (typeof raw !== 'object' || raw === null) {
     throw new ValidationError('Invalid structure output', { raw })
@@ -44,6 +46,22 @@ export function validateStructureOutput(raw: unknown): {
     throw new ValidationError('Invalid structure architecture', { raw })
   }
 
+  if (
+    obj.featureSignals !== undefined &&
+    (!Array.isArray(obj.featureSignals) ||
+      !obj.featureSignals.every((item: unknown) => typeof item === 'string'))
+  ) {
+    throw new ValidationError('Invalid structure feature signals', { raw })
+  }
+
+  if (
+    obj.complexity !== undefined &&
+    (!Array.isArray(obj.complexity) ||
+      !obj.complexity.every((item: unknown) => typeof item === 'string'))
+  ) {
+    throw new ValidationError('Invalid structure complexity output', { raw })
+  }
+
   return {
     overview: obj.overview as string[],
     entryPoints:
@@ -56,5 +74,11 @@ export function validateStructureOutput(raw: unknown): {
       obj.architecture === undefined
         ? undefined
         : (obj.architecture as string[]),
+    featureSignals:
+      obj.featureSignals === undefined
+        ? undefined
+        : (obj.featureSignals as string[]),
+    complexity:
+      obj.complexity === undefined ? undefined : (obj.complexity as string[]),
   }
 }

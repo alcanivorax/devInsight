@@ -13,7 +13,8 @@ Rules:
 - If installation instructions are missing, state that clearly.
 - If a run command is provided, present it as a possible way to run the project.
 - Do NOT guarantee that the steps will work.
-- Use package manager and scripts when present to suggest cautious next steps.
+- Use package manager, core scripts, and allScripts when present to suggest cautious next steps.
+- Include quality commands such as lint, typecheck, test, or format only when scripts prove they exist.
 - Output ONLY valid JSON.
 - Do NOT include explanations or extra text.
 

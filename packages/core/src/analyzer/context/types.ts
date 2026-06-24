@@ -1,6 +1,9 @@
 import type { RepoType } from '../classify/types'
 import type {
+  ComplexityIndicator,
+  DependencyInsight,
   DirectoryRoleSignal,
+  FeatureSignal,
   ImportantFileSignal,
 } from '../extractors/types'
 
@@ -21,7 +24,9 @@ interface TechContext {
   packageManager: string | null
   dependencies?: string[]
   devDependencies?: string[]
+  dependencyInsights?: DependencyInsight[]
   scripts?: Record<string, string | null>
+  allScripts?: Record<string, string>
 }
 
 // Influenced by: extractTreeInfo (+ defaultBranch internally)
@@ -36,6 +41,8 @@ interface StructureContext {
   importantFiles?: ImportantFileSignal[]
   directoryRoles?: DirectoryRoleSignal[]
   architecturalSignals?: string[]
+  featureSignals?: FeatureSignal[]
+  complexityIndicators?: ComplexityIndicator[]
   counts?: {
     files: number
     directories: number
@@ -51,6 +58,7 @@ interface SetupContext {
   installation: string | null
   runCommand: string | null
   scripts?: Record<string, string | null>
+  allScripts?: Record<string, string>
   packageManager: string | null
 }
 

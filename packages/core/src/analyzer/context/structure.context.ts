@@ -29,6 +29,8 @@ export function createStructureContext(
     importantFiles: repositoryMap?.importantFiles,
     directoryRoles: repositoryMap?.directoryRoles,
     architecturalSignals: repositoryMap?.architecturalSignals,
+    featureSignals: repositoryMap?.featureSignals,
+    complexityIndicators: repositoryMap?.complexityIndicators,
     counts: repositoryMap?.counts,
   }
 }

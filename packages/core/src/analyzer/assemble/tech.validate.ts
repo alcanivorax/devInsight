@@ -3,6 +3,7 @@ import { ValidationError } from '../../error'
 export function validateTechOutput(raw: unknown): {
   stack: string
   notableLibraries?: string[]
+  dependencyInsights?: string[]
 } {
   if (
     typeof raw !== 'object' ||
@@ -22,8 +23,17 @@ export function validateTechOutput(raw: unknown): {
     throw new ValidationError('Invalid notable libraries output', { raw })
   }
 
+  if (
+    obj.dependencyInsights !== undefined &&
+    (!Array.isArray(obj.dependencyInsights) ||
+      !obj.dependencyInsights.every((item) => typeof item === 'string'))
+  ) {
+    throw new ValidationError('Invalid dependency insights output', { raw })
+  }
+
   return {
     stack: obj.stack as string,
     notableLibraries: obj.notableLibraries as string[] | undefined,
+    dependencyInsights: obj.dependencyInsights as string[] | undefined,
   }
 }

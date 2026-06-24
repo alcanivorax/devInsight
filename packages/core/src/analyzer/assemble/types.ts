@@ -8,6 +8,7 @@ export interface RepoAnalysis {
   tech: {
     stack: string
     notableLibraries?: string[]
+    dependencyInsights?: string[]
   }
 
   structure: {
@@ -15,6 +16,8 @@ export interface RepoAnalysis {
     entryPoints?: string[]
     importantFiles?: string[]
     architecture?: string[]
+    featureSignals?: string[]
+    complexity?: string[]
   }
 
   setup: {

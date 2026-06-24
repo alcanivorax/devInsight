@@ -12,12 +12,15 @@ interface RepoAnalysis {
   tech: {
     stack: string
     notableLibraries?: string[]
+    dependencyInsights?: string[]
   }
   structure: {
     overview: string[]
     entryPoints?: string[] | null
     importantFiles?: string[]
     architecture?: string[]
+    featureSignals?: string[]
+    complexity?: string[]
   }
   setup: {
     installation: string | null
@@ -205,6 +208,10 @@ function Results({
             title="Notable libraries"
             items={analysis.tech.notableLibraries}
           />
+          <InsightList
+            title="Dependency signals"
+            items={analysis.tech.dependencyInsights}
+          />
         </Panel>
       </div>
 
@@ -237,6 +244,14 @@ function Results({
         <InsightList
           title="Architecture signals"
           items={analysis.structure.architecture}
+        />
+        <InsightList
+          title="Detected features"
+          items={analysis.structure.featureSignals}
+        />
+        <InsightList
+          title="Complexity signals"
+          items={analysis.structure.complexity}
         />
         <InsightList
           title="Important files"

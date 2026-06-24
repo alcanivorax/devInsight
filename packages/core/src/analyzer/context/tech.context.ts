@@ -13,6 +13,8 @@ export function createTechContext(
     packageManager: resolved.packageManager,
     dependencies: packageInfo?.dependencies.slice(0, 20),
     devDependencies: packageInfo?.devDependencies.slice(0, 20),
+    dependencyInsights: packageInfo?.dependencyInsights,
     scripts: packageInfo?.scripts,
+    allScripts: packageInfo?.allScripts,
   }
 }

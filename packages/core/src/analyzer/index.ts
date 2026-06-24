@@ -1,3 +1,4 @@
+export * from './analyzeRepository'
 export * from './ai'
 export * from './assemble'
 export * from './classify'

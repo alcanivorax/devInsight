@@ -1,3 +1,4 @@
+export * from './analyzer/analyzeRepository'
 export * from './analyzer/ai'
 export * from './analyzer/assemble'
 export * from './analyzer/classify'

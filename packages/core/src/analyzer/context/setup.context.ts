@@ -11,6 +11,7 @@ export function createSetupContext(
     installation: readme.installation ?? null,
     runCommand: resolveRunCommand(packageInfo),
     scripts: packageInfo.scripts,
+    allScripts: packageInfo.allScripts,
     packageManager: packageInfo.packageManager,
   }
 }

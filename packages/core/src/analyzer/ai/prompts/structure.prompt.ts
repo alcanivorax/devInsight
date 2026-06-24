@@ -13,8 +13,9 @@ Rules:
 - If multiple entry points exist, acknowledge ambiguity.
 - If none exist, state that clearly.
 - Do NOT invent explanations.
-- Use top-level directories, directory roles, important files, counts, and architectural signals when present.
+- Use top-level directories, directory roles, important files, feature signals, complexity indicators, counts, and architectural signals when present.
 - Mention concrete paths when they explain where important work happens.
+- Prefer repository-specific facts over general framework descriptions.
 - Output ONLY valid JSON.
 - The JSON MUST match this schema exactly:
 
@@ -22,7 +23,9 @@ Rules:
   "overview": string[],
   "entryPoints": string[] | null,
   "importantFiles": string[],
-  "architecture": string[]
+  "architecture": string[],
+  "featureSignals": string[],
+  "complexity": string[]
 }
 
 Structure Context:

@@ -20,12 +20,25 @@ interface DirectoryRoleSignal {
   role: string
 }
 
+interface FeatureSignal {
+  name: string
+  evidence: string[]
+  confidence: ConfidenceLevel
+}
+
+interface ComplexityIndicator {
+  label: string
+  detail: string
+}
+
 interface RepositoryMap {
   topLevelDirectories: string[]
   topLevelFiles: string[]
   importantFiles: ImportantFileSignal[]
   directoryRoles: DirectoryRoleSignal[]
   architecturalSignals: string[]
+  featureSignals: FeatureSignal[]
+  complexityIndicators: ComplexityIndicator[]
   counts: {
     files: number
     directories: number
@@ -84,15 +97,36 @@ interface PackageInfo {
     build: string | null
     start: string | null
     test: string | null
+    lint: string | null
+    checkTypes: string | null
+    format: string | null
   }
+  allScripts: Record<string, string>
 
   dependencies: string[]
   devDependencies: string[]
+  dependencyInsights: DependencyInsight[]
 
   main?: string | null
   module?: string | null
   exports?: unknown
   bin?: Record<string, string>
+}
+
+interface DependencyInsight {
+  name: string
+  scope: 'runtime' | 'development'
+  category:
+    | 'framework'
+    | 'ui'
+    | 'ai'
+    | 'data'
+    | 'auth'
+    | 'github'
+    | 'validation'
+    | 'testing'
+    | 'tooling'
+  reason: string
 }
 
 // ─── Metadata ────────────────────────────────────────────────────────────────
@@ -200,6 +234,8 @@ export type {
   TreeSignals,
   ImportantFileSignal,
   DirectoryRoleSignal,
+  FeatureSignal,
+  ComplexityIndicator,
   RepositoryMap,
   TechHints,
   EntryPointValue,
@@ -207,6 +243,7 @@ export type {
   TechSignal,
   ReadmeInfo,
   PackageInfo,
+  DependencyInsight,
   FrameworkSignature,
   MetadataInfo,
   FileLanguage,
